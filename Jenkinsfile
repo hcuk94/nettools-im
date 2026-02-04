@@ -1,6 +1,7 @@
 pipeline {
-    agent { label 'docker-agent-jekyll' }
-    
+    agent { 
+        label 'docker-agent-jekyll'
+    }
     stages {
         stage('Build') {
             steps {
