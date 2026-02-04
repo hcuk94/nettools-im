@@ -8,12 +8,28 @@
   // ============================================
 
   function isValidIPv4(ip) {
+    // Check if it's CIDR notation
+    if (ip.includes('/')) {
+      const [addr, cidr] = ip.split('/');
+      const cidrNum = parseInt(cidr, 10);
+      if (isNaN(cidrNum) || cidrNum < 0 || cidrNum > 32) return false;
+      return isValidIPv4(addr);
+    }
     const parts = ip.split('.');
     if (parts.length !== 4) return false;
     return parts.every(part => {
       const num = parseInt(part, 10);
       return !isNaN(num) && num >= 0 && num <= 255 && part === num.toString();
     });
+  }
+
+  function parseIPv4Input(input) {
+    // Returns { ip: string, targetCidr: number|null }
+    if (input.includes('/')) {
+      const [ip, cidr] = input.split('/');
+      return { ip: ip.trim(), targetCidr: parseInt(cidr, 10) };
+    }
+    return { ip: input.trim(), targetCidr: null };
   }
 
   function ipv4ToInt(ip) {
@@ -130,6 +146,14 @@
   }
 
   function isValidIPv6(ip) {
+    // Check if it's CIDR notation
+    if (ip.includes('/')) {
+      const [addr, prefix] = ip.split('/');
+      const prefixNum = parseInt(prefix, 10);
+      if (isNaN(prefixNum) || prefixNum < 0 || prefixNum > 128) return false;
+      return isValidIPv6(addr);
+    }
+    
     // Basic validation
     ip = ip.trim().toLowerCase();
     
@@ -153,6 +177,15 @@
     } catch (e) {
       return false;
     }
+  }
+
+  function parseIPv6Input(input) {
+    // Returns { ip: string, targetPrefix: number|null }
+    if (input.includes('/')) {
+      const [ip, prefix] = input.split('/');
+      return { ip: ip.trim(), targetPrefix: parseInt(prefix, 10) };
+    }
+    return { ip: input.trim(), targetPrefix: null };
   }
 
   function ipv6ToBigInt(ip) {
@@ -329,7 +362,7 @@
     document.getElementById('error-message').classList.add('hidden');
   }
 
-  function renderIPv4Results(ip) {
+  function renderIPv4Results(ip, targetCidr = null) {
     const summary = getIPv4Summary(ip);
     const subnets = calculateIPv4Subnets(ip);
     
@@ -376,9 +409,12 @@
     `;
     
     for (const subnet of subnets) {
+      const isHighlighted = targetCidr !== null && subnet.cidr === targetCidr;
+      const highlightClass = isHighlighted ? 'highlighted' : '';
+      const indicator = isHighlighted ? ' ← Your Subnet' : '';
       tableHtml += `
-        <tr>
-          <td class="cidr">${subnet.cidrNotation}</td>
+        <tr class="${highlightClass}">
+          <td class="cidr">${subnet.cidrNotation}${indicator}</td>
           <td>${subnet.range}</td>
           <td>${subnet.subnetMask}</td>
           <td class="ip-count">${subnet.hostCountFormatted}</td>
@@ -389,12 +425,15 @@
     tableHtml += '</tbody></table>';
     
     document.getElementById('summary-grid').innerHTML = summaryHtml;
-    document.getElementById('results-info').textContent = `Showing all ${subnets.length} subnets for ${ip}`;
+    const infoText = targetCidr !== null 
+      ? `Showing all subnets with /${targetCidr} highlighted for ${ip}` 
+      : `Showing all ${subnets.length} subnets for ${ip}`;
+    document.getElementById('results-info').textContent = infoText;
     document.getElementById('results-table-container').innerHTML = tableHtml;
     document.getElementById('results-container').classList.remove('hidden');
   }
 
-  function renderIPv6Results(ip) {
+  function renderIPv6Results(ip, targetPrefix = null) {
     const summary = getIPv6Summary(ip);
     const subnets = calculateIPv6Subnets(ip);
     
@@ -436,9 +475,12 @@
     `;
     
     for (const subnet of subnets) {
+      const isHighlighted = targetPrefix !== null && subnet.prefix === targetPrefix;
+      const highlightClass = isHighlighted ? 'highlighted' : '';
+      const indicator = isHighlighted ? ' ← Your Prefix' : '';
       tableHtml += `
-        <tr>
-          <td class="cidr">${subnet.cidrNotation}</td>
+        <tr class="${highlightClass}">
+          <td class="cidr">${subnet.cidrNotation}${indicator}</td>
           <td>${subnet.range}</td>
           <td class="ip-count">${subnet.hostCountFormatted}</td>
         </tr>
@@ -448,7 +490,10 @@
     tableHtml += '</tbody></table>';
     
     document.getElementById('summary-grid').innerHTML = summaryHtml;
-    document.getElementById('results-info').textContent = `Showing common prefix lengths for ${compressIPv6(ip)}`;
+    const infoText = targetPrefix !== null 
+      ? `Showing common prefixes with /${targetPrefix} highlighted for ${compressIPv6(ip)}` 
+      : `Showing common prefix lengths for ${compressIPv6(ip)}`;
+    document.getElementById('results-info').textContent = infoText;
     document.getElementById('results-table-container').innerHTML = tableHtml;
     document.getElementById('results-container').classList.remove('hidden');
   }
@@ -468,16 +513,18 @@
     
     if (isIPv6) {
       if (!isValidIPv6(input)) {
-        showError('Invalid IPv6 address. Please enter a valid IPv6 address (e.g., 2001:db8::1)');
+        showError('Invalid IPv6 address. Please enter a valid IPv6 address (e.g., 2001:db8::1 or 2001:db8::/64)');
         return;
       }
-      renderIPv6Results(input);
+      const { ip, targetPrefix } = parseIPv6Input(input);
+      renderIPv6Results(ip, targetPrefix);
     } else {
       if (!isValidIPv4(input)) {
-        showError('Invalid IPv4 address. Please enter a valid IPv4 address (e.g., 192.168.1.1)');
+        showError('Invalid IPv4 address. Please enter a valid IPv4 address (e.g., 192.168.1.1 or 192.168.1.0/24)');
         return;
       }
-      renderIPv4Results(input);
+      const { ip, targetCidr } = parseIPv4Input(input);
+      renderIPv4Results(ip, targetCidr);
     }
   }
 
@@ -490,9 +537,9 @@
     // Update placeholder
     const input = document.getElementById('ip-input');
     if (tab === 'ipv6') {
-      input.placeholder = 'e.g. 2001:db8::1';
+      input.placeholder = 'e.g. 2001:db8::1 or 2001:db8::/64';
     } else {
-      input.placeholder = 'e.g. 192.168.1.1';
+      input.placeholder = 'e.g. 192.168.1.1 or 192.168.1.0/24';
     }
     
     // Clear results
