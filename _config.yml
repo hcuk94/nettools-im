@@ -5,7 +5,10 @@ description: >-
   Nettools.im provides free, browser-based tools for network administrators
   and IT professionals. All tools run entirely in your browser for privacy and speed.
 baseurl: ""
-url: ""
+url: "https://www.nettools.im"
+encoding: utf-8 # Make sure the encoding is right
+lang: en-GB
+branch: main
 
 # Build settings
 markdown: kramdown
