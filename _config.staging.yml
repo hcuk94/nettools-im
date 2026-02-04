@@ -8,7 +8,7 @@ baseurl: ""
 url: "https://www.nettools.im"
 encoding: utf-8 # Make sure the encoding is right
 lang: en-GB
-branch: main
+branch: staging
 
 # Build settings
 markdown: kramdown
@@ -33,4 +33,3 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
-  - Jenkinsfile
