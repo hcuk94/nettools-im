@@ -22,6 +22,7 @@ pipeline {
                     sh '''
                         cd _site
                         ls -lh
+                        cp _config.staging.yml _config.yml
                         rsync -rvz -e "ssh -o StrictHostKeyChecking=no -o IdentityFile=${SSH_KEY}" * cicduser@${DEPLOY_SERVER}:${DEPLOY_PATH}
                     '''
                 }
