@@ -537,9 +537,9 @@
     // Update placeholder
     const input = document.getElementById('ip-input');
     if (tab === 'ipv6') {
-      input.placeholder = 'e.g., 2001:db8::1 or 2001:db8::/64';
+      input.placeholder = 'e.g. 2001:db8::1 or 2001:db8::/64';
     } else {
-      input.placeholder = 'e.g., 192.168.1.1 or 192.168.1.0/24';
+      input.placeholder = 'e.g. 192.168.1.1 or 192.168.1.0/24';
     }
     
     // Clear results

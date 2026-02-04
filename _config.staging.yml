@@ -1,6 +1,6 @@
 # Site settings
 title: Nettools.im
-tagline: A collection of tools for network & IT professionals
+tagline: Staging Site - Not for Production Use
 description: >-
   Nettools.im provides free, browser-based tools for network administrators
   and IT professionals. All tools run entirely in your browser for privacy and speed.
@@ -8,7 +8,7 @@ baseurl: ""
 url: "https://www.nettools.im"
 encoding: utf-8 # Make sure the encoding is right
 lang: en-GB
-branch: main
+branch: staging
 
 # Build settings
 markdown: kramdown
@@ -33,4 +33,3 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
-  - Jenkinsfile
