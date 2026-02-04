@@ -15,8 +15,8 @@ pipeline {
             steps {
                 withCredentials([
                     sshUserPrivateKey(credentialsId: "ssh-key-cicduser", keyFileVariable: 'SSH_KEY'),
-                    string(credentialsId: 'server-name-www1', variable: 'DEPLOY_SERVER'),
-                    string(credentialsId: 'deploy-path-nettools', variable: 'DEPLOY_PATH')
+                    string(credentialsId: 'servername-www1', variable: 'DEPLOY_SERVER'),
+                    string(credentialsId: 'deploypath-nettools', variable: 'DEPLOY_PATH')
                 ]) {
                     sh '''
                         cd _site
