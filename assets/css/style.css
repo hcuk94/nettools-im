@@ -475,6 +475,23 @@ body {
   text-align: right;
 }
 
+.results-table tr.highlighted {
+  background-color: var(--accent-color);
+}
+
+.results-table tr.highlighted td {
+  color: #ffffff;
+  background-color: var(--accent-color);
+}
+
+.results-table tr.highlighted:hover td {
+  background-color: var(--accent-hover);
+}
+
+.results-table tr.highlighted .cidr {
+  color: #ffffff;
+}
+
 /* Summary Card */
 .summary-card {
   background-color: var(--bg-tertiary);
