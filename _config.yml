@@ -1,0 +1,32 @@
+# Site settings
+title: Nettools.im
+tagline: A collection of tools for network & IT professionals
+description: >-
+  Nettools.im provides free, browser-based tools for network administrators
+  and IT professionals. All tools run entirely in your browser for privacy and speed.
+baseurl: ""
+url: ""
+
+# Build settings
+markdown: kramdown
+permalink: pretty
+
+# Collections
+collections:
+  tools:
+    output: true
+    permalink: /tools/:name/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "tools"
+    values:
+      layout: "tool"
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md

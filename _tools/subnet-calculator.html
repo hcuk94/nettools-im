@@ -1,0 +1,62 @@
+---
+layout: tool
+title: Subnet Calculator
+description: Calculate all valid subnets and ranges from any IPv4 or IPv6 address. Runs entirely in your browser.
+scripts:
+  - /assets/js/subnet-calculator.js
+---
+
+<div class="calculator-section">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="ipv4">IPv4</button>
+    <button class="tab-btn" data-tab="ipv6">IPv6</button>
+  </div>
+  
+  <div class="input-group">
+    <div class="input-wrapper">
+      <label for="ip-input">IP Address</label>
+      <input 
+        type="text" 
+        id="ip-input" 
+        class="input-field" 
+        placeholder="e.g., 192.168.1.1"
+        autocomplete="off"
+        spellcheck="false"
+      >
+    </div>
+    <button type="button" id="calculate-btn" class="btn btn-primary">
+      Calculate
+    </button>
+    <button type="button" id="clear-btn" class="btn btn-secondary">
+      Clear
+    </button>
+  </div>
+</div>
+
+<div id="error-message" class="error-message hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="12" y1="8" x2="12" y2="12"/>
+    <line x1="12" y1="16" x2="12.01" y2="16"/>
+  </svg>
+  <span></span>
+</div>
+
+<div id="results-container" class="results-container hidden">
+  <div class="summary-card">
+    <div id="summary-grid" class="summary-grid">
+      <!-- Populated by JavaScript -->
+    </div>
+  </div>
+  
+  <div class="results-header">
+    <h3>Subnet Breakdown</h3>
+    <span id="results-info" class="results-info"></span>
+  </div>
+  
+  <div class="results-table-wrapper">
+    <div id="results-table-container">
+      <!-- Populated by JavaScript -->
+    </div>
+  </div>
+</div>
