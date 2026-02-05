@@ -647,3 +647,535 @@ body {
     break-inside: avoid;
   }
 }
+
+/* ============================================
+   Crontab Helper Styles
+   ============================================ */
+
+/* Tab content */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Cron Input Section */
+.cron-input-section {
+  margin-bottom: 1.5rem;
+}
+
+.cron-input-wrapper {
+  margin-bottom: 0.5rem;
+}
+
+.cron-input-field {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 500;
+  background-color: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  text-align: center;
+  letter-spacing: 0.1em;
+  transition: all var(--transition-speed);
+}
+
+.cron-input-field:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+}
+
+.cron-input-field::placeholder {
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+}
+
+.cron-fields-visual {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.cron-field-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cron-field-value {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  min-width: 60px;
+  text-align: center;
+}
+
+.cron-field-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Cron Description */
+.cron-description {
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.description-text {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Builder Grid */
+.builder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.builder-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.builder-field label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.builder-select,
+.select-field {
+  padding: 0.6rem 0.85rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-speed);
+}
+
+.builder-select:focus,
+.select-field:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.builder-custom {
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  transition: all var(--transition-speed);
+}
+
+.builder-custom:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.builder-custom::placeholder {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+/* Builder Output */
+.builder-output {
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.builder-output label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.builder-result {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.builder-result code {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  background-color: var(--bg-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+}
+
+/* Next Runs List */
+.next-runs-list {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.next-run-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color var(--transition-speed);
+}
+
+.next-run-item:last-child {
+  border-bottom: none;
+}
+
+.next-run-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.run-number {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-tertiary);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.run-datetime {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.run-relative {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.no-runs {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+/* Timezone Select */
+.timezone-select {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.timezone-select label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.timezone-select .select-field {
+  min-width: 150px;
+}
+
+/* Field Breakdown */
+.field-breakdown {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+}
+
+.breakdown-item {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.breakdown-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.breakdown-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.breakdown-value {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  background-color: var(--bg-primary);
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+}
+
+.breakdown-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.breakdown-explanation {
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.breakdown-range {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* Examples Section */
+.examples-section {
+  margin-top: 2rem;
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.example-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-speed);
+}
+
+.example-btn:hover {
+  border-color: var(--accent-color);
+  background-color: var(--bg-tertiary);
+}
+
+.example-btn code {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.example-btn span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Reference Section */
+.reference-section {
+  margin-top: 2rem;
+}
+
+.reference-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.reference-section .results-table td {
+  font-family: inherit;
+}
+
+.reference-section .results-table code {
+  font-family: var(--font-mono);
+  background-color: var(--bg-tertiary);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.825rem;
+}
+
+/* Syntax Grid */
+.syntax-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.syntax-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.syntax-card h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.syntax-table {
+  width: 100%;
+}
+
+.syntax-table tr {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.syntax-table tr:last-child {
+  border-bottom: none;
+}
+
+.syntax-table td {
+  padding: 0.5rem 0;
+  font-size: 0.85rem;
+}
+
+.syntax-table td:first-child {
+  color: var(--text-muted);
+  width: 45%;
+}
+
+.syntax-table td:last-child {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.syntax-table code {
+  font-family: var(--font-mono);
+  background-color: var(--bg-tertiary);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.825rem;
+  color: var(--accent-color);
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Responsive for Crontab Helper */
+@media (max-width: 900px) {
+  .cron-input-field {
+    font-size: 1.1rem;
+    padding: 0.85rem 1rem;
+  }
+  
+  .cron-fields-visual {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.25rem;
+  }
+  
+  .cron-field-value {
+    font-size: 1rem;
+    padding: 0.4rem 0.5rem;
+    min-width: auto;
+  }
+  
+  .cron-field-label {
+    font-size: 0.6rem;
+  }
+  
+  .field-breakdown {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .field-breakdown .breakdown-item:last-child {
+    grid-column: span 2;
+  }
+  
+  .builder-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .builder-result {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .builder-result code {
+    text-align: center;
+  }
+  
+  .timezone-select {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .field-breakdown {
+    grid-template-columns: 1fr;
+  }
+  
+  .field-breakdown .breakdown-item:last-child {
+    grid-column: span 1;
+  }
+  
+  .builder-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .examples-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .syntax-grid {
+    grid-template-columns: 1fr;
+  }
+}

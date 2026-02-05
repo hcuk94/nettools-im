@@ -1,0 +1,327 @@
+---
+layout: tool
+title: Crontab Helper
+description: Parse, validate, and understand cron expressions. See next execution times and build schedules interactively.
+scripts:
+  - /assets/js/crontab-helper.js
+---
+
+<div class="calculator-section">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="parse">Parse Expression</button>
+    <button class="tab-btn" data-tab="build">Build Schedule</button>
+  </div>
+  
+  <!-- Parse Tab -->
+  <div id="parse-tab" class="tab-content active">
+    <div class="cron-input-section">
+      <label for="cron-input" class="sr-only">Cron Expression</label>
+      <div class="cron-input-wrapper">
+        <input 
+          type="text" 
+          id="cron-input" 
+          class="cron-input-field" 
+          placeholder="* * * * *"
+          autocomplete="off"
+          spellcheck="false"
+          value="0 9 * * 1-5"
+        >
+      </div>
+      <div class="cron-fields-visual">
+        <div class="cron-field-box">
+          <span class="cron-field-value" id="field-minute">0</span>
+          <span class="cron-field-label">minute</span>
+        </div>
+        <div class="cron-field-box">
+          <span class="cron-field-value" id="field-hour">9</span>
+          <span class="cron-field-label">hour</span>
+        </div>
+        <div class="cron-field-box">
+          <span class="cron-field-value" id="field-dom">*</span>
+          <span class="cron-field-label">day (month)</span>
+        </div>
+        <div class="cron-field-box">
+          <span class="cron-field-value" id="field-month">*</span>
+          <span class="cron-field-label">month</span>
+        </div>
+        <div class="cron-field-box">
+          <span class="cron-field-value" id="field-dow">1-5</span>
+          <span class="cron-field-label">day (week)</span>
+        </div>
+      </div>
+    </div>
+    
+    <div id="cron-description" class="cron-description">
+      <span class="description-text">At 09:00 on every day-of-week from Monday through Friday.</span>
+    </div>
+    
+    <div id="cron-error" class="error-message hidden">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span></span>
+    </div>
+  </div>
+  
+  <!-- Build Tab -->
+  <div id="build-tab" class="tab-content hidden">
+    <div class="builder-grid">
+      <div class="builder-field">
+        <label for="build-minute">Minute</label>
+        <select id="build-minute" class="builder-select">
+          <option value="*">Every minute (*)</option>
+          <option value="0" selected>0</option>
+          <option value="*/5">Every 5 minutes (*/5)</option>
+          <option value="*/10">Every 10 minutes (*/10)</option>
+          <option value="*/15">Every 15 minutes (*/15)</option>
+          <option value="*/30">Every 30 minutes (*/30)</option>
+        </select>
+        <input type="text" id="build-minute-custom" class="builder-custom" placeholder="or custom (e.g., 0,30)">
+      </div>
+      
+      <div class="builder-field">
+        <label for="build-hour">Hour</label>
+        <select id="build-hour" class="builder-select">
+          <option value="*">Every hour (*)</option>
+          <option value="0">0 (midnight)</option>
+          <option value="6">6 (6am)</option>
+          <option value="9" selected>9 (9am)</option>
+          <option value="12">12 (noon)</option>
+          <option value="18">18 (6pm)</option>
+          <option value="*/2">Every 2 hours (*/2)</option>
+          <option value="*/6">Every 6 hours (*/6)</option>
+          <option value="9-17">Working hours (9-17)</option>
+        </select>
+        <input type="text" id="build-hour-custom" class="builder-custom" placeholder="or custom (e.g., 9-17)">
+      </div>
+      
+      <div class="builder-field">
+        <label for="build-dom">Day of Month</label>
+        <select id="build-dom" class="builder-select">
+          <option value="*" selected>Every day (*)</option>
+          <option value="1">1st</option>
+          <option value="15">15th</option>
+          <option value="1,15">1st and 15th</option>
+          <option value="1-7">1st-7th</option>
+        </select>
+        <input type="text" id="build-dom-custom" class="builder-custom" placeholder="or custom (e.g., 1,15)">
+      </div>
+      
+      <div class="builder-field">
+        <label for="build-month">Month</label>
+        <select id="build-month" class="builder-select">
+          <option value="*" selected>Every month (*)</option>
+          <option value="1">January</option>
+          <option value="1,4,7,10">Quarterly (Jan,Apr,Jul,Oct)</option>
+          <option value="6-8">Summer (Jun-Aug)</option>
+        </select>
+        <input type="text" id="build-month-custom" class="builder-custom" placeholder="or custom (e.g., 1-6)">
+      </div>
+      
+      <div class="builder-field">
+        <label for="build-dow">Day of Week</label>
+        <select id="build-dow" class="builder-select">
+          <option value="*">Every day (*)</option>
+          <option value="1-5" selected>Weekdays (Mon-Fri)</option>
+          <option value="0,6">Weekends (Sat,Sun)</option>
+          <option value="1">Monday only</option>
+          <option value="5">Friday only</option>
+        </select>
+        <input type="text" id="build-dow-custom" class="builder-custom" placeholder="or custom (e.g., 1,3,5)">
+      </div>
+    </div>
+    
+    <div class="builder-output">
+      <label>Generated Expression</label>
+      <div class="builder-result">
+        <code id="builder-result-code">0 9 * * 1-5</code>
+        <button type="button" id="copy-expression" class="btn btn-secondary btn-sm" title="Copy to clipboard">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          Copy
+        </button>
+        <button type="button" id="use-expression" class="btn btn-primary btn-sm">
+          Use in Parser
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Next Executions -->
+<div id="next-runs-section" class="results-container">
+  <div class="results-header">
+    <h3>Next Scheduled Runs</h3>
+    <div class="timezone-select">
+      <label for="timezone-select">Timezone:</label>
+      <select id="timezone-select" class="select-field">
+        <option value="local">Local Time</option>
+        <option value="UTC">UTC</option>
+        <option value="Europe/London">Europe/London</option>
+        <option value="America/New_York">America/New York</option>
+        <option value="America/Los_Angeles">America/Los Angeles</option>
+        <option value="Asia/Tokyo">Asia/Tokyo</option>
+        <option value="Australia/Sydney">Australia/Sydney</option>
+      </select>
+    </div>
+  </div>
+  
+  <div id="next-runs-list" class="next-runs-list">
+    <!-- Populated by JavaScript -->
+  </div>
+</div>
+
+<!-- Field Breakdown -->
+<div id="breakdown-section" class="results-container">
+  <div class="results-header">
+    <h3>Expression Breakdown</h3>
+  </div>
+  
+  <div id="field-breakdown" class="field-breakdown">
+    <!-- Populated by JavaScript -->
+  </div>
+</div>
+
+<!-- Common Examples -->
+<div class="examples-section">
+  <div class="results-header">
+    <h3>Common Examples</h3>
+    <span class="results-info">Click to use</span>
+  </div>
+  
+  <div class="examples-grid">
+    <button type="button" class="example-btn" data-cron="* * * * *">
+      <code>* * * * *</code>
+      <span>Every minute</span>
+    </button>
+    <button type="button" class="example-btn" data-cron="*/5 * * * *">
+      <code>*/5 * * * *</code>
+      <span>Every 5 minutes</span>
+    </button>
+    <button type="button" class="example-btn" data-cron="0 * * * *">
+      <code>0 * * * *</code>
+      <span>Every hour</span>
+    </button>
+    <button type="button" class="example-btn" data-cron="0 0 * * *">
+      <code>0 0 * * *</code>
+      <span>Daily at midnight</span>
+    </button>
+    <button type="button" class="example-btn" data-cron="0 9 * * 1-5">
+      <code>0 9 * * 1-5</code>
+      <span>Weekdays at 9am</span>
+    </button>
+    <button type="button" class="example-btn" data-cron="0 0 * * 0">
+      <code>0 0 * * 0</code>
+      <span>Weekly (Sunday midnight)</span>
+    </button>
+    <button type="button" class="example-btn" data-cron="0 0 1 * *">
+      <code>0 0 1 * *</code>
+      <span>Monthly (1st at midnight)</span>
+    </button>
+    <button type="button" class="example-btn" data-cron="0 0 1 1 *">
+      <code>0 0 1 1 *</code>
+      <span>Yearly (Jan 1st midnight)</span>
+    </button>
+    <button type="button" class="example-btn" data-cron="30 4 1,15 * *">
+      <code>30 4 1,15 * *</code>
+      <span>4:30am on 1st and 15th</span>
+    </button>
+    <button type="button" class="example-btn" data-cron="0 22 * * 1-5">
+      <code>0 22 * * 1-5</code>
+      <span>Weekdays at 10pm</span>
+    </button>
+    <button type="button" class="example-btn" data-cron="0 */6 * * *">
+      <code>0 */6 * * *</code>
+      <span>Every 6 hours</span>
+    </button>
+    <button type="button" class="example-btn" data-cron="0 9-17 * * 1-5">
+      <code>0 9-17 * * 1-5</code>
+      <span>Hourly during work hours</span>
+    </button>
+  </div>
+</div>
+
+<!-- Special Strings Reference -->
+<div class="reference-section">
+  <div class="results-header">
+    <h3>Special Strings</h3>
+  </div>
+  
+  <div class="reference-table-wrapper">
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>String</th>
+          <th>Equivalent</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>@yearly</code> / <code>@annually</code></td>
+          <td><code>0 0 1 1 *</code></td>
+          <td>Once a year at midnight on January 1st</td>
+        </tr>
+        <tr>
+          <td><code>@monthly</code></td>
+          <td><code>0 0 1 * *</code></td>
+          <td>Once a month at midnight on the 1st</td>
+        </tr>
+        <tr>
+          <td><code>@weekly</code></td>
+          <td><code>0 0 * * 0</code></td>
+          <td>Once a week at midnight on Sunday</td>
+        </tr>
+        <tr>
+          <td><code>@daily</code> / <code>@midnight</code></td>
+          <td><code>0 0 * * *</code></td>
+          <td>Once a day at midnight</td>
+        </tr>
+        <tr>
+          <td><code>@hourly</code></td>
+          <td><code>0 * * * *</code></td>
+          <td>Once an hour at the beginning</td>
+        </tr>
+        <tr>
+          <td><code>@reboot</code></td>
+          <td>N/A</td>
+          <td>Run once at startup</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Syntax Reference -->
+<div class="reference-section">
+  <div class="results-header">
+    <h3>Syntax Reference</h3>
+  </div>
+  
+  <div class="syntax-grid">
+    <div class="syntax-card">
+      <h4>Field Values</h4>
+      <table class="syntax-table">
+        <tr><td>Minute</td><td>0-59</td></tr>
+        <tr><td>Hour</td><td>0-23</td></tr>
+        <tr><td>Day of Month</td><td>1-31</td></tr>
+        <tr><td>Month</td><td>1-12 or JAN-DEC</td></tr>
+        <tr><td>Day of Week</td><td>0-7 or SUN-SAT (0 & 7 = Sunday)</td></tr>
+      </table>
+    </div>
+    
+    <div class="syntax-card">
+      <h4>Special Characters</h4>
+      <table class="syntax-table">
+        <tr><td><code>*</code></td><td>Any value</td></tr>
+        <tr><td><code>,</code></td><td>Value list (e.g., 1,3,5)</td></tr>
+        <tr><td><code>-</code></td><td>Range (e.g., 1-5)</td></tr>
+        <tr><td><code>/</code></td><td>Step values (e.g., */15)</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
