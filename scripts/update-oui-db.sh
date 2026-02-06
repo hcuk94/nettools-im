@@ -8,33 +8,48 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATA_DIR="${SCRIPT_DIR}/../assets/data"
 TEMP_DIR=$(mktemp -d)
 
+# Export variables so Python can access them
+export TEMP_DIR
+export DATA_DIR
+
 cleanup() {
     rm -rf "$TEMP_DIR"
 }
 trap cleanup EXIT
 
 echo "=== Downloading IEEE OUI databases ==="
+echo "Using temp directory: $TEMP_DIR"
+echo "Output directory: $DATA_DIR"
+
+# Create output directory if it doesn't exist
+mkdir -p "$DATA_DIR"
 
 # Download MA-L (24-bit OUI - most common)
 echo "Downloading MA-L (OUI) database..."
 curl -sL "https://standards-oui.ieee.org/oui/oui.csv" -o "$TEMP_DIR/oui.csv"
+ls -lh "$TEMP_DIR/oui.csv"
 
 # Download MA-M (28-bit)
 echo "Downloading MA-M database..."
 curl -sL "https://standards-oui.ieee.org/oui28/mam.csv" -o "$TEMP_DIR/mam.csv"
+ls -lh "$TEMP_DIR/mam.csv"
 
 # Download MA-S (36-bit)
 echo "Downloading MA-S database..."
 curl -sL "https://standards-oui.ieee.org/oui36/oui36.csv" -o "$TEMP_DIR/oui36.csv"
+ls -lh "$TEMP_DIR/oui36.csv"
 
 # Download CID (Company ID)
 echo "Downloading CID database..."
 curl -sL "https://standards-oui.ieee.org/cid/cid.csv" -o "$TEMP_DIR/cid.csv"
+ls -lh "$TEMP_DIR/cid.csv"
 
 # Download IAB (Individual Address Block - legacy)
 echo "Downloading IAB database..."
 curl -sL "https://standards-oui.ieee.org/iab/iab.csv" -o "$TEMP_DIR/iab.csv"
+ls -lh "$TEMP_DIR/iab.csv"
 
+echo ""
 echo "=== Processing databases ==="
 
 # Create a Python script to process the CSVs into optimized JSON
@@ -42,10 +57,13 @@ python3 << 'PYTHON_SCRIPT'
 import csv
 import json
 import os
-from collections import defaultdict
+from datetime import datetime, timezone
 
 temp_dir = os.environ.get('TEMP_DIR', '/tmp')
 data_dir = os.environ.get('DATA_DIR', './assets/data')
+
+print(f"Python using temp_dir: {temp_dir}")
+print(f"Python using data_dir: {data_dir}")
 
 os.makedirs(data_dir, exist_ok=True)
 
@@ -56,6 +74,11 @@ def normalize_prefix(prefix):
 def parse_ieee_csv(filepath, prefix_length):
     """Parse IEEE CSV format and return dict of prefix -> vendor info"""
     entries = {}
+    
+    if not os.path.exists(filepath):
+        print(f"  WARNING: File not found: {filepath}")
+        return entries
+    
     try:
         with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
             reader = csv.DictReader(f)
@@ -79,7 +102,7 @@ def parse_ieee_csv(filepath, prefix_length):
                     'c': address_parts[-1] if address_parts else None  # country (usually last line)
                 }
     except Exception as e:
-        print(f"Error parsing {filepath}: {e}")
+        print(f"  ERROR parsing {filepath}: {e}")
     
     return entries
 
@@ -108,7 +131,7 @@ print(f"  Found {len(iab)} entries")
 # For efficient lookup, we organize by prefix length
 database = {
     'version': 1,
-    'generated': __import__('datetime').datetime.utcnow().isoformat() + 'Z',
+    'generated': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
     'counts': {
         'mal': len(mal),
         'mam': len(mam),
