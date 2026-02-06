@@ -56,12 +56,15 @@ title: Home
     <div class="tool-card-icon">
       <!-- Icon: .* (dot-star) -->
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <!-- dot (full stop) -->
-        <circle cx="7" cy="16.5" r="1.4" fill="var(--accent-color)" stroke="none"/>
-        <!-- star/asterisk -->
-        <path d="M16 7v10"/>
-        <path d="M11.7 9.5l8.6 5"/>
-        <path d="M11.7 14.5l8.6-5"/>
+        <!-- nudge left for visual centering -->
+        <g transform="translate(-0.6,0)">
+          <!-- dot (full stop) rendered as a round stroke so it inherits icon styling everywhere -->
+          <path d="M7.2 16.6h0" stroke-width="4" stroke-linecap="round" />
+          <!-- star/asterisk -->
+          <path d="M16 7v10"/>
+          <path d="M11.7 9.5l8.6 5"/>
+          <path d="M11.7 14.5l8.6-5"/>
+        </g>
       </svg>
     </div>
     <h2 class="tool-card-title">Regex Helper</h2>
