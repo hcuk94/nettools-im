@@ -1,0 +1,229 @@
+---
+layout: tool
+title: Chmod Helper
+description: Calculate and understand Linux/Unix file permissions. Convert between octal, symbolic, and rwx strings (including setuid/setgid/sticky bits).
+scripts:
+  - /assets/js/chmod-helper.js
+---
+
+<div class="calculator-section">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="calc">Calculator</button>
+    <button class="tab-btn" data-tab="explain">Reference</button>
+  </div>
+
+  <!-- Calculator Tab -->
+  <div id="calc-tab" class="tab-content active">
+    <div class="chmod-top-grid">
+      <div class="chmod-inputs">
+        <div class="input-group">
+          <div class="input-wrapper">
+            <label for="chmod-octal">Octal</label>
+            <input
+              type="text"
+              id="chmod-octal"
+              class="input-field"
+              inputmode="numeric"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="e.g. 755 or 0644 or 4755"
+              value="755"
+            >
+            <div class="chmod-hint">3 digits (e.g. <code>755</code>) or 4 digits for special bits (e.g. <code>4755</code>).</div>
+          </div>
+
+          <div class="input-wrapper">
+            <label for="chmod-symbolic">Symbolic (absolute)</label>
+            <input
+              type="text"
+              id="chmod-symbolic"
+              class="input-field"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="e.g. u=rwx,g=rx,o=rx"
+            >
+            <div class="chmod-hint">Supports <code>u=</code>, <code>g=</code>, <code>o=</code> with any combination of <code>r</code>, <code>w</code>, <code>x</code>, <code>s</code>, <code>t</code>.</div>
+          </div>
+
+          <div class="input-wrapper chmod-type-wrapper">
+            <label for="chmod-filetype">Type</label>
+            <select id="chmod-filetype" class="select-field">
+              <option value="file" selected>File (-)</option>
+              <option value="dir">Directory (d)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="chmod-error" class="error-message hidden" aria-live="polite">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="chmod-outputs">
+        <div class="chmod-output-card">
+          <div class="chmod-output-label">Permission string</div>
+          <div class="chmod-output-value">
+            <code id="chmod-rwx">-rwxr-xr-x</code>
+          </div>
+        </div>
+
+        <div class="chmod-output-card">
+          <div class="chmod-output-label">chmod commands</div>
+          <div class="chmod-command-row">
+            <code id="chmod-cmd-octal">chmod 755 &lt;path&gt;</code>
+            <button type="button" class="btn btn-secondary btn-sm chmod-copy" data-copy="chmod-cmd-octal" title="Copy">
+              Copy
+            </button>
+          </div>
+          <div class="chmod-command-row">
+            <code id="chmod-cmd-symbolic">chmod u=rwx,g=rx,o=rx &lt;path&gt;</code>
+            <button type="button" class="btn btn-secondary btn-sm chmod-copy" data-copy="chmod-cmd-symbolic" title="Copy">
+              Copy
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Permissions Matrix -->
+    <div class="chmod-matrix" aria-label="Chmod permission matrix">
+      <div class="chmod-matrix-header"></div>
+      <div class="chmod-matrix-header">Read</div>
+      <div class="chmod-matrix-header">Write</div>
+      <div class="chmod-matrix-header">Execute</div>
+      <div class="chmod-matrix-header">Special</div>
+
+      <div class="chmod-matrix-rowlabel">Owner (u)</div>
+      <label class="chmod-check">
+        <input type="checkbox" id="u-r" checked>
+        <span>r</span>
+      </label>
+      <label class="chmod-check">
+        <input type="checkbox" id="u-w" checked>
+        <span>w</span>
+      </label>
+      <label class="chmod-check">
+        <input type="checkbox" id="u-x" checked>
+        <span>x</span>
+      </label>
+      <label class="chmod-check">
+        <input type="checkbox" id="u-s">
+        <span>setuid</span>
+      </label>
+
+      <div class="chmod-matrix-rowlabel">Group (g)</div>
+      <label class="chmod-check">
+        <input type="checkbox" id="g-r" checked>
+        <span>r</span>
+      </label>
+      <label class="chmod-check">
+        <input type="checkbox" id="g-w">
+        <span>w</span>
+      </label>
+      <label class="chmod-check">
+        <input type="checkbox" id="g-x" checked>
+        <span>x</span>
+      </label>
+      <label class="chmod-check">
+        <input type="checkbox" id="g-s">
+        <span>setgid</span>
+      </label>
+
+      <div class="chmod-matrix-rowlabel">Other (o)</div>
+      <label class="chmod-check">
+        <input type="checkbox" id="o-r" checked>
+        <span>r</span>
+      </label>
+      <label class="chmod-check">
+        <input type="checkbox" id="o-w">
+        <span>w</span>
+      </label>
+      <label class="chmod-check">
+        <input type="checkbox" id="o-x" checked>
+        <span>x</span>
+      </label>
+      <label class="chmod-check">
+        <input type="checkbox" id="o-t">
+        <span>sticky</span>
+      </label>
+    </div>
+
+    <div class="chmod-summary">
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="summary-label">Octal</span>
+          <span class="summary-value" id="chmod-summary-octal">755</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Symbolic</span>
+          <span class="summary-value" id="chmod-summary-symbolic">u=rwx,g=rx,o=rx</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Special bits</span>
+          <span class="summary-value" id="chmod-summary-special">none</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reference Tab -->
+  <div id="explain-tab" class="tab-content hidden">
+    <div class="reference-section" style="margin-top:0">
+      <div class="results-header">
+        <h3>Octal Values</h3>
+      </div>
+
+      <div class="reference-table-wrapper">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Digit</th>
+              <th>Meaning</th>
+              <th>Bits</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>0</code></td><td>No permissions</td><td><code>---</code></td><td><code>600</code> (only owner can read/write)</td></tr>
+            <tr><td><code>1</code></td><td>Execute</td><td><code>--x</code></td><td><code>711</code></td></tr>
+            <tr><td><code>2</code></td><td>Write</td><td><code>-w-</code></td><td><code>622</code></td></tr>
+            <tr><td><code>3</code></td><td>Write + Execute</td><td><code>-wx</code></td><td><code>733</code></td></tr>
+            <tr><td><code>4</code></td><td>Read</td><td><code>r--</code></td><td><code>644</code></td></tr>
+            <tr><td><code>5</code></td><td>Read + Execute</td><td><code>r-x</code></td><td><code>755</code></td></tr>
+            <tr><td><code>6</code></td><td>Read + Write</td><td><code>rw-</code></td><td><code>664</code></td></tr>
+            <tr><td><code>7</code></td><td>Read + Write + Execute</td><td><code>rwx</code></td><td><code>777</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="reference-section">
+      <div class="results-header">
+        <h3>Special Bits (4-digit chmod)</h3>
+      </div>
+
+      <div class="reference-table-wrapper">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Digit</th>
+              <th>Bit</th>
+              <th>Applies to</th>
+              <th>Effect</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>4</code></td><td><code>setuid</code></td><td>owner execute</td><td>Run as file owner (when executable)</td></tr>
+            <tr><td><code>2</code></td><td><code>setgid</code></td><td>group execute</td><td>Run as file group / inherit group on directories</td></tr>
+            <tr><td><code>1</code></td><td><code>sticky</code></td><td>other execute</td><td>On directories, restrict delete/rename to owners</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
