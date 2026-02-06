@@ -53,14 +53,14 @@
       </li>
       <li>
         <a href="{{ '/tools/regex-helper/' | relative_url }}" {% if page.url == '/tools/regex-helper/' %}class="active"{% endif %}>
-          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 12h5"/>
-            <path d="M16 12h5"/>
-            <circle cx="9.5" cy="12" r="1"/>
-            <circle cx="12" cy="12" r="1"/>
-            <circle cx="14.5" cy="12" r="1"/>
-            <path d="M8 5h8"/>
-            <path d="M8 19h8"/>
+          <!-- Icon: .* (dot-star) -->
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <!-- dot -->
+            <circle cx="8" cy="12" r="1.6" fill="currentColor" stroke="none"/>
+            <!-- star/asterisk -->
+            <path d="M16 7v10"/>
+            <path d="M11.7 9.5l8.6 5"/>
+            <path d="M11.7 14.5l8.6-5"/>
           </svg>
           Regex Helper
         </a>
