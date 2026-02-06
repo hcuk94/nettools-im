@@ -1,0 +1,276 @@
+---
+layout: tool
+title: MAC Vendor Lookup
+description: Identify network device manufacturers from MAC addresses using the official IEEE OUI database. Runs entirely in your browser.
+scripts:
+  - /assets/js/mac-lookup.js
+---
+
+<div class="calculator-section">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="lookup">Lookup</button>
+    <button class="tab-btn" data-tab="batch">Batch Lookup</button>
+    <button class="tab-btn" data-tab="search">Search by Vendor</button>
+    <button class="tab-btn" data-tab="reference">Reference</button>
+  </div>
+  
+  <!-- Lookup Tab -->
+  <div id="lookup-tab" class="tab-content active">
+    <div class="input-group">
+      <div class="input-wrapper">
+        <label for="mac-input">MAC Address</label>
+        <input 
+          type="text" 
+          id="mac-input" 
+          class="input-field" 
+          placeholder="e.g. AA:BB:CC:DD:EE:FF or AA-BB-CC-DD-EE-FF"
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <p class="mac-hint">Supports various formats: colons, dashes, dots, or no separators</p>
+      </div>
+      <button type="button" id="lookup-btn" class="btn btn-primary">
+        Lookup
+      </button>
+      <button type="button" id="clear-btn" class="btn btn-secondary">
+        Clear
+      </button>
+    </div>
+  </div>
+  
+  <!-- Batch Lookup Tab -->
+  <div id="batch-tab" class="tab-content hidden">
+    <div class="mac-text-section">
+      <label class="mac-label" for="batch-input">MAC Addresses (one per line)</label>
+      <textarea 
+        id="batch-input" 
+        class="mac-text-area" 
+        placeholder="Enter MAC addresses, one per line:&#10;AA:BB:CC:DD:EE:FF&#10;11-22-33-44-55-66&#10;AABBCCDDEEFF"
+        spellcheck="false"
+      ></textarea>
+    </div>
+    <div class="input-group" style="margin-top: 1rem;">
+      <button type="button" id="batch-lookup-btn" class="btn btn-primary">
+        Lookup All
+      </button>
+      <button type="button" id="batch-clear-btn" class="btn btn-secondary">
+        Clear
+      </button>
+      <button type="button" id="batch-export-btn" class="btn btn-secondary" disabled>
+        Export CSV
+      </button>
+    </div>
+  </div>
+  
+  <!-- Search by Vendor Tab -->
+  <div id="search-tab" class="tab-content hidden">
+    <div class="input-group">
+      <div class="input-wrapper">
+        <label for="vendor-search-input">Vendor / Organization Name</label>
+        <input 
+          type="text" 
+          id="vendor-search-input" 
+          class="input-field" 
+          placeholder="e.g. Apple, Cisco, Intel, Samsung"
+          autocomplete="off"
+          spellcheck="false"
+        >
+      </div>
+      <button type="button" id="search-btn" class="btn btn-primary">
+        Search
+      </button>
+    </div>
+  </div>
+  
+  <!-- Reference Tab -->
+  <div id="reference-tab" class="tab-content hidden">
+    <div class="mac-reference-section">
+      <h3>MAC Address Structure</h3>
+      <div class="mac-structure-diagram">
+        <div class="mac-byte-group">
+          <div class="mac-bytes">
+            <span class="mac-byte oui">AA</span>
+            <span class="mac-byte oui">BB</span>
+            <span class="mac-byte oui">CC</span>
+          </div>
+          <span class="mac-byte-label">OUI (Vendor Prefix)</span>
+        </div>
+        <div class="mac-byte-group">
+          <div class="mac-bytes">
+            <span class="mac-byte nic">DD</span>
+            <span class="mac-byte nic">EE</span>
+            <span class="mac-byte nic">FF</span>
+          </div>
+          <span class="mac-byte-label">NIC Specific</span>
+        </div>
+      </div>
+      
+      <h3 style="margin-top: 2rem;">Special Bits</h3>
+      <div class="mac-special-bits">
+        <div class="mac-bit-card">
+          <h4>Locally Administered Bit (Bit 1)</h4>
+          <p>When set, indicates the MAC address was assigned locally (not by manufacturer). Common in virtual machines, containers, and privacy features.</p>
+          <code>x2:xx:xx:xx:xx:xx, x6:xx:xx:xx:xx:xx, xA:xx:xx:xx:xx:xx, xE:xx:xx:xx:xx:xx</code>
+        </div>
+        <div class="mac-bit-card">
+          <h4>Multicast Bit (Bit 0)</h4>
+          <p>When set, indicates a multicast address (sent to multiple devices). Unicast addresses have this bit cleared.</p>
+          <code>x1:xx:xx:xx:xx:xx, x3:xx:xx:xx:xx:xx, x5:xx:xx:xx:xx:xx, ...</code>
+        </div>
+      </div>
+      
+      <h3 style="margin-top: 2rem;">IEEE Registration Types</h3>
+      <div class="reference-table-wrapper">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Prefix Size</th>
+              <th>Address Block</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>MA-L</td>
+              <td>24-bit (6 hex)</td>
+              <td>~16.7M addresses</td>
+              <td>Large block for major vendors (most common)</td>
+            </tr>
+            <tr>
+              <td>MA-M</td>
+              <td>28-bit (7 hex)</td>
+              <td>~1M addresses</td>
+              <td>Medium block for mid-size manufacturers</td>
+            </tr>
+            <tr>
+              <td>MA-S</td>
+              <td>36-bit (9 hex)</td>
+              <td>4096 addresses</td>
+              <td>Small block for limited production</td>
+            </tr>
+            <tr>
+              <td>IAB</td>
+              <td>36-bit (9 hex)</td>
+              <td>4096 addresses</td>
+              <td>Individual Address Block (legacy, replaced by MA-S)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <h3 style="margin-top: 2rem;">Common Formats</h3>
+      <div class="mac-formats-grid">
+        <div class="mac-format-item">
+          <code>AA:BB:CC:DD:EE:FF</code>
+          <span>Colon-separated (Unix/Linux)</span>
+        </div>
+        <div class="mac-format-item">
+          <code>AA-BB-CC-DD-EE-FF</code>
+          <span>Hyphen-separated (Windows)</span>
+        </div>
+        <div class="mac-format-item">
+          <code>AABB.CCDD.EEFF</code>
+          <span>Dot-separated (Cisco)</span>
+        </div>
+        <div class="mac-format-item">
+          <code>AABBCCDDEEFF</code>
+          <span>No separator</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="error-message" class="error-message hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="12" y1="8" x2="12" y2="12"/>
+    <line x1="12" y1="16" x2="12.01" y2="16"/>
+  </svg>
+  <span></span>
+</div>
+
+<div id="loading-indicator" class="loading-indicator hidden">
+  <div class="loading-spinner"></div>
+  <span>Loading OUI database...</span>
+</div>
+
+<!-- Single Lookup Results -->
+<div id="results-container" class="results-container hidden">
+  <div class="summary-card">
+    <div id="summary-grid" class="summary-grid">
+      <!-- Populated by JavaScript -->
+    </div>
+  </div>
+  
+  <div id="mac-details" class="mac-details-section">
+    <!-- Populated by JavaScript -->
+  </div>
+</div>
+
+<!-- Batch Results -->
+<div id="batch-results-container" class="results-container hidden">
+  <div class="results-header">
+    <h3>Batch Results</h3>
+    <span id="batch-results-info" class="results-info"></span>
+  </div>
+  
+  <div class="results-table-wrapper">
+    <table class="results-table" id="batch-results-table">
+      <thead>
+        <tr>
+          <th>MAC Address</th>
+          <th>Vendor</th>
+          <th>Type</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="batch-results-body">
+        <!-- Populated by JavaScript -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Vendor Search Results -->
+<div id="search-results-container" class="results-container hidden">
+  <div class="results-header">
+    <h3>Vendor Search Results</h3>
+    <span id="search-results-info" class="results-info"></span>
+  </div>
+  
+  <div class="results-table-wrapper">
+    <table class="results-table" id="search-results-table">
+      <thead>
+        <tr>
+          <th>OUI Prefix</th>
+          <th>Organization</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody id="search-results-body">
+        <!-- Populated by JavaScript -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Database Info -->
+<div id="db-info" class="db-info-section hidden">
+  <div class="db-info-card">
+    <span class="db-info-label">Database</span>
+    <span id="db-total" class="db-info-value">-</span>
+    <span class="db-info-sublabel">Total Entries</span>
+  </div>
+  <div class="db-info-card">
+    <span class="db-info-label">Updated</span>
+    <span id="db-updated" class="db-info-value">-</span>
+    <span class="db-info-sublabel">Last Generated</span>
+  </div>
+  <div class="db-info-card">
+    <span class="db-info-label">Source</span>
+    <span class="db-info-value">IEEE SA</span>
+    <span class="db-info-sublabel">Official Registry</span>
+  </div>
+</div>
