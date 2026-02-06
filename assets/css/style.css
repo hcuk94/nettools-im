@@ -1184,41 +1184,16 @@ body {
    Chmod Helper Styles
    ============================================ */
 
-.chmod-top-grid {
+/* Input grid: 2 columns on desktop */
+.chmod-input-grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 1.25rem;
-  align-items: start;
-}
-
-.chmod-inputs {
-  min-width: 0; /* Prevent overflow */
-}
-
-.chmod-inputs .input-group {
-  display: flex;
-  flex-direction: column;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  margin-bottom: 1.25rem;
 }
 
-.chmod-row-flex {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-}
-
-.chmod-rwx-wrapper {
-  flex: 1;
+.chmod-input-grid .input-wrapper {
   min-width: 0;
-}
-
-.chmod-type-wrapper {
-  flex: 0 0 auto;
-  width: 140px;
-}
-
-.chmod-type-wrapper .select-field {
-  width: 100%;
 }
 
 .chmod-hint {
@@ -1238,10 +1213,12 @@ body {
   white-space: nowrap;
 }
 
-.chmod-outputs {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+/* Output row: horizontal on desktop */
+.chmod-outputs-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .chmod-output-card {
@@ -1269,7 +1246,6 @@ body {
   border-radius: 8px;
   border: 1px solid var(--border-color);
   display: inline-block;
-  width: 100%;
   text-align: center;
 }
 
@@ -1283,18 +1259,19 @@ body {
 
 .chmod-command-row code {
   font-family: var(--font-mono);
+  font-size: 0.85rem;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 0.5rem 0.75rem;
   flex: 1;
-  min-width: 220px;
+  min-width: 180px;
   overflow-x: auto;
   white-space: nowrap;
 }
 
+/* Permissions matrix */
 .chmod-matrix {
-  margin-top: 1.25rem;
   display: grid;
   grid-template-columns: 1.2fr repeat(4, 1fr);
   gap: 0.5rem;
@@ -1356,8 +1333,13 @@ body {
   border: 1px solid var(--border-color);
 }
 
+/* Chmod responsive */
 @media (max-width: 900px) {
-  .chmod-top-grid {
+  .chmod-input-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chmod-outputs-row {
     grid-template-columns: 1fr;
   }
 
@@ -1381,14 +1363,6 @@ body {
 }
 
 @media (max-width: 600px) {
-  .chmod-row-flex {
-    flex-direction: column;
-  }
-
-  .chmod-type-wrapper {
-    width: 100%;
-  }
-
   .chmod-matrix {
     grid-template-columns: 1fr;
   }
