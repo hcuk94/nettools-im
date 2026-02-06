@@ -24,30 +24,52 @@ echo "Output directory: $DATA_DIR"
 # Create output directory if it doesn't exist
 mkdir -p "$DATA_DIR"
 
+# Function to download with retry
+download_with_retry() {
+    local url="$1"
+    local output="$2"
+    local max_retries=3
+    local retry=0
+    
+    while [ $retry -lt $max_retries ]; do
+        echo "  Downloading: $url (attempt $((retry + 1))/$max_retries)"
+        
+        if curl -fsSL --connect-timeout 30 --max-time 120 "$url" -o "$output" 2>&1; then
+            echo "  Success: $(ls -lh "$output" | awk '{print $5}')"
+            return 0
+        else
+            echo "  Failed with exit code: $?"
+            retry=$((retry + 1))
+            if [ $retry -lt $max_retries ]; then
+                echo "  Retrying in 5 seconds..."
+                sleep 5
+            fi
+        fi
+    done
+    
+    echo "  ERROR: Failed to download after $max_retries attempts"
+    return 1
+}
+
 # Download MA-L (24-bit OUI - most common)
 echo "Downloading MA-L (OUI) database..."
-curl -sL "https://standards-oui.ieee.org/oui/oui.csv" -o "$TEMP_DIR/oui.csv"
-ls -lh "$TEMP_DIR/oui.csv"
+download_with_retry "https://standards-oui.ieee.org/oui/oui.csv" "$TEMP_DIR/oui.csv"
 
 # Download MA-M (28-bit)
 echo "Downloading MA-M database..."
-curl -sL "https://standards-oui.ieee.org/oui28/mam.csv" -o "$TEMP_DIR/mam.csv"
-ls -lh "$TEMP_DIR/mam.csv"
+download_with_retry "https://standards-oui.ieee.org/oui28/mam.csv" "$TEMP_DIR/mam.csv"
 
 # Download MA-S (36-bit)
 echo "Downloading MA-S database..."
-curl -sL "https://standards-oui.ieee.org/oui36/oui36.csv" -o "$TEMP_DIR/oui36.csv"
-ls -lh "$TEMP_DIR/oui36.csv"
+download_with_retry "https://standards-oui.ieee.org/oui36/oui36.csv" "$TEMP_DIR/oui36.csv"
 
 # Download CID (Company ID)
 echo "Downloading CID database..."
-curl -sL "https://standards-oui.ieee.org/cid/cid.csv" -o "$TEMP_DIR/cid.csv"
-ls -lh "$TEMP_DIR/cid.csv"
+download_with_retry "https://standards-oui.ieee.org/cid/cid.csv" "$TEMP_DIR/cid.csv"
 
 # Download IAB (Individual Address Block - legacy)
 echo "Downloading IAB database..."
-curl -sL "https://standards-oui.ieee.org/iab/iab.csv" -o "$TEMP_DIR/iab.csv"
-ls -lh "$TEMP_DIR/iab.csv"
+download_with_retry "https://standards-oui.ieee.org/iab/iab.csv" "$TEMP_DIR/iab.csv"
 
 echo ""
 echo "=== Processing databases ==="
@@ -79,6 +101,13 @@ def parse_ieee_csv(filepath, prefix_length):
         print(f"  WARNING: File not found: {filepath}")
         return entries
     
+    file_size = os.path.getsize(filepath)
+    print(f"  File size: {file_size} bytes")
+    
+    if file_size == 0:
+        print(f"  WARNING: File is empty: {filepath}")
+        return entries
+    
     try:
         with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
             reader = csv.DictReader(f)
@@ -103,6 +132,8 @@ def parse_ieee_csv(filepath, prefix_length):
                 }
     except Exception as e:
         print(f"  ERROR parsing {filepath}: {e}")
+        import traceback
+        traceback.print_exc()
     
     return entries
 
