@@ -27,7 +27,7 @@ scripts:
           placeholder="Enter your pattern..."
           autocomplete="off"
           spellcheck="false"
-          value="[a-z]+\\.[a-z]{2,}"
+          value="\\b\\w+@\\w+\\.\\w+\\b"
         >
         <span class="regex-delimiter">/</span>
         <input
@@ -57,8 +57,9 @@ scripts:
         class="regex-text-area"
         placeholder="Enter text to test against your pattern..."
         spellcheck="false"
-      >Hello world. Contact us at support@example.com or sales@company.co.uk
-Visit https://example.com for more info.</textarea>
+>Build, test, and understand regular expressions with this tool.
+Contact support@example.com or sales@mycompany.org for help.
+Visit docs.example.io to learn more about regex patterns.</textarea>
     </div>
 
     <!-- Results -->
