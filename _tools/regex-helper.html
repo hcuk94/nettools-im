@@ -11,6 +11,7 @@ scripts:
     <button class="tab-btn active" data-tab="test">Test</button>
     <button class="tab-btn" data-tab="explain">Explain</button>
     <button class="tab-btn" data-tab="reference">Reference</button>
+    <button class="tab-btn" data-tab="examples">Examples</button>
   </div>
 
   <!-- Test Tab -->
@@ -195,6 +196,81 @@ scripts:
           <tr><td><code>\xhh</code></td><td>Hex character</td></tr>
           <tr><td><code>\uhhhh</code></td><td>Unicode character</td></tr>
         </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Examples Tab -->
+  <div id="examples-tab" class="tab-content hidden">
+    <div class="regex-examples-list">
+      <div class="regex-example-item">
+        <h4>Email Addresses</h4>
+        <code class="regex-example-pattern">/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g</code>
+        <p class="regex-example-text">Contact us at support@example.com for assistance with your inquiry.</p>
+        <span class="regex-example-match">Match: support@example.com</span>
+      </div>
+
+      <div class="regex-example-item">
+        <h4>UK Phone Numbers</h4>
+        <code class="regex-example-pattern">/\+44\s?\d{4}\s?\d{6}|0\d{4}\s?\d{6}/g</code>
+        <p class="regex-example-text">Call our London office on +44 20 7946 0958 during business hours.</p>
+        <span class="regex-example-match">Match: +44 20 7946 0958</span>
+      </div>
+
+      <div class="regex-example-item">
+        <h4>Dates (DD/MM/YYYY)</h4>
+        <code class="regex-example-pattern">/\b(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}\b/g</code>
+        <p class="regex-example-text">The meeting is scheduled for 25/12/2024 in the conference room.</p>
+        <span class="regex-example-match">Match: 25/12/2024</span>
+      </div>
+
+      <div class="regex-example-item">
+        <h4>URLs</h4>
+        <code class="regex-example-pattern">/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g</code>
+        <p class="regex-example-text">Visit https://www.example.com/page for more information about our services.</p>
+        <span class="regex-example-match">Match: https://www.example.com/page</span>
+      </div>
+
+      <div class="regex-example-item">
+        <h4>Postcodes (UK)</h4>
+        <code class="regex-example-pattern">/[A-Z]{1,2}[0-9][A-Z0-9]?\s?[0-9][A-Z]{2}/g</code>
+        <p class="regex-example-text">Our headquarters are located at SW1A 1AA in central London.</p>
+        <span class="regex-example-match">Match: SW1A 1AA</span>
+      </div>
+
+      <div class="regex-example-item">
+        <h4>Credit Card Numbers</h4>
+        <code class="regex-example-pattern">/\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|3[0-9]{13}|6(?:011|5[0-9]{2})[0-9]{12})\b/g</code>
+        <p class="regex-example-text">Your card ending in 4532 1234 5678 9012 has been approved.</p>
+        <span class="regex-example-match">Match: 4532 1234 5678 9012</span>
+      </div>
+
+      <div class="regex-example-item">
+        <h4>Hex Colour Codes</h4>
+        <code class="regex-example-pattern">/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/g</code>
+        <p class="regex-example-text">The brand colours are #FF5733 for primary and #333 for text.</p>
+        <span class="regex-example-match">Matches: #FF5733, #333</span>
+      </div>
+
+      <div class="regex-example-item">
+        <h4>IP Addresses</h4>
+        <code class="regex-example-pattern">/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g</code>
+        <p class="regex-example-text">Server configuration: connect to 192.168.1.1 for admin panel.</p>
+        <span class="regex-example-match">Match: 192.168.1.1</span>
+      </div>
+
+      <div class="regex-example-item">
+        <h4>Words Starting with Capital</h4>
+        <code class="regex-example-pattern">/\b[A-Z][a-zA-Z]*\b/g</code>
+        <p class="regex-example-text">The Quick Brown Fox Jumps Over the Lazy Dog in the Garden.</p>
+        <span class="regex-example-match">Matches: The, Quick, Brown, Fox, Jumps, Over, Lazy, Dog, Garden</span>
+      </div>
+
+      <div class="regex-example-item">
+        <h4>HTML Tags</h4>
+        <code class="regex-example-pattern">/<([a-z][a-z0-9]*)\b[^>]*>(.*?)<\/\1>/gi</code>
+        <p class="regex-example-text">The content is wrapped in <div class="container">Hello World</div> tags.</p>
+        <span class="regex-example-match">Match: <div class="container">Hello World</div></span>
       </div>
     </div>
   </div>
