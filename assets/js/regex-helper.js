@@ -357,6 +357,15 @@
     }
   }
 
+  // Load example into test tab
+  function loadExample(pattern, flags, text) {
+    $('regex-pattern').value = pattern;
+    $('regex-flags').value = flags;
+    $('regex-text').value = text;
+    switchTab('test');
+    updateResults();
+  }
+
   // ============================================
   // Initialization
   // ============================================
@@ -373,6 +382,22 @@
     // Tab switching
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    // Example items - click to load into test tab
+    document.querySelectorAll('.regex-example-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const patternEl = item.querySelector('.regex-example-pattern');
+        const textEl = item.querySelector('.regex-example-text');
+        if (patternEl && textEl) {
+          const fullPattern = patternEl.textContent;
+          const match = fullPattern.match(/^\/(.+)\/([gimsuy]*)$/);
+          if (match) {
+            loadExample(match[1], match[2] || '', textEl.textContent);
+          }
+        }
+      });
+      item.style.cursor = 'pointer';
     });
 
     // Substitution
