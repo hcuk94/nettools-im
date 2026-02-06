@@ -1179,3 +1179,230 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================
+   Chmod Helper Styles
+   ============================================ */
+
+/* Input grid: 2 columns on desktop */
+.chmod-input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.chmod-input-grid .input-wrapper {
+  min-width: 0;
+}
+
+.chmod-input-grid .select-field {
+  padding: 0.7rem 1rem;
+  font-size: 0.95rem;
+}
+
+.chmod-hint {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.chmod-hint code {
+  font-family: var(--font-mono);
+  background-color: var(--bg-tertiary);
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+/* Output row: horizontal on desktop */
+.chmod-outputs-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.chmod-output-card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.chmod-output-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.chmod-output-value code {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  background-color: var(--bg-primary);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  display: inline-block;
+  text-align: center;
+}
+
+.chmod-command-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.chmod-command-row code {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  flex: 1;
+  min-width: 180px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* Permissions matrix */
+.chmod-matrix {
+  display: grid;
+  grid-template-columns: 1.2fr repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.chmod-matrix-header {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 0.35rem 0.25rem;
+}
+
+.chmod-matrix-rowlabel {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.chmod-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color var(--transition-speed), background-color var(--transition-speed);
+}
+
+.chmod-check:hover {
+  border-color: var(--accent-color);
+  background-color: var(--bg-tertiary);
+}
+
+.chmod-check input {
+  width: 16px;
+  height: 16px;
+}
+
+.chmod-check span {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.chmod-summary {
+  margin-top: 1.25rem;
+  background-color: var(--bg-tertiary);
+  border-radius: 10px;
+  padding: 1.25rem;
+  border: 1px solid var(--border-color);
+}
+
+/* Chmod responsive */
+@media (max-width: 900px) {
+  .chmod-input-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chmod-outputs-row {
+    grid-template-columns: 1fr;
+  }
+
+  .chmod-matrix {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .chmod-matrix-header {
+    display: none;
+  }
+
+  .chmod-matrix-rowlabel {
+    grid-column: span 2;
+    justify-content: center;
+  }
+
+  .chmod-command-row code {
+    min-width: 0;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .chmod-matrix {
+    grid-template-columns: 1fr;
+  }
+
+  .chmod-matrix-rowlabel {
+    grid-column: span 1;
+  }
+
+  .chmod-check {
+    padding: 0.5rem;
+    gap: 0.35rem;
+  }
+
+  .chmod-check span {
+    font-size: 0.8rem;
+  }
+
+  .chmod-output-value code {
+    font-size: 1rem;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .chmod-command-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .chmod-command-row code {
+    min-width: 0;
+    font-size: 0.7rem;
+    word-break: break-all;
+    white-space: normal;
+  }
+
+  .chmod-summary .summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
