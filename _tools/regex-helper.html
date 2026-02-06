@@ -212,7 +212,7 @@ scripts:
 
       <div class="regex-example-item">
         <h4>UK Phone Numbers</h4>
-        <code class="regex-example-pattern">/\+44\s?\d{4}\s?\d{6}|0\d{4}\s?\d{6}/g</code>
+        <code class="regex-example-pattern">/\+44[\s\d]{10,12}|0\d[\s\d]{8,10}/g</code>
         <p class="regex-example-text">Call our London office on +44 20 7946 0958 during business hours.</p>
         <span class="regex-example-match">Match: +44 20 7946 0958</span>
       </div>
@@ -240,7 +240,7 @@ scripts:
 
       <div class="regex-example-item">
         <h4>Credit Card Numbers</h4>
-        <code class="regex-example-pattern">/\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|3[0-9]{13}|6(?:011|5[0-9]{2})[0-9]{12})\b/g</code>
+        <code class="regex-example-pattern">/\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}/g</code>
         <p class="regex-example-text">Your card ending in 4532 1234 5678 9012 has been approved.</p>
         <span class="regex-example-match">Match: 4532 1234 5678 9012</span>
       </div>
