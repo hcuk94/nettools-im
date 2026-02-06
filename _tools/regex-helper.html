@@ -1,0 +1,202 @@
+---
+layout: tool
+title: Regex Helper
+description: Build, test, and understand regular expressions. Real-time pattern matching with explanations and syntax reference.
+scripts:
+  - /assets/js/regex-helper.js
+---
+
+<div class="calculator-section">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="test">Test</button>
+    <button class="tab-btn" data-tab="explain">Explain</button>
+    <button class="tab-btn" data-tab="reference">Reference</button>
+  </div>
+
+  <!-- Test Tab -->
+  <div id="test-tab" class="tab-content active">
+    <!-- Pattern Input -->
+    <div class="regex-pattern-section">
+      <label for="regex-pattern" class="regex-label">Regular Expression</label>
+      <div class="regex-pattern-wrapper">
+        <span class="regex-delimiter">/</span>
+        <input
+          type="text"
+          id="regex-pattern"
+          class="regex-pattern-input"
+          placeholder="Enter your pattern..."
+          autocomplete="off"
+          spellcheck="false"
+          value="[a-z]+\\.[a-z]{2,}"
+        >
+        <span class="regex-delimiter">/</span>
+        <input
+          type="text"
+          id="regex-flags"
+          class="regex-flags-input"
+          placeholder="gi"
+          value="gi"
+          title="Flags: g=global, i=ignoreCase, m=multiline, s=dotAll, u=unicode, y=sticky"
+        >
+      </div>
+      <div id="regex-error" class="error-message hidden" aria-live="polite">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- Test Text -->
+    <div class="regex-text-section">
+      <label for="regex-text" class="regex-label">Test Text</label>
+      <textarea
+        id="regex-text"
+        class="regex-text-area"
+        placeholder="Enter text to test against your pattern..."
+        spellcheck="false"
+      >Hello world. Contact us at support@example.com or sales@company.co.uk
+Visit https://example.com for more info.</textarea>
+    </div>
+
+    <!-- Results -->
+    <div class="regex-results-section">
+      <div class="regex-results-header">
+        <h3>Match Results</h3>
+        <span id="regex-match-count" class="regex-match-badge">0 matches</span>
+      </div>
+      <div id="regex-results" class="regex-results-list">
+        <!-- Populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Substitution (optional) -->
+    <div class="regex-substitute-section">
+      <label for="regex-substitute" class="regex-label">
+        Substitution
+        <span class="regex-hint">Use $& for whole match, $1, $2... for capture groups</span>
+      </label>
+      <div class="regex-substitute-row">
+        <input
+          type="text"
+          id="regex-substitute"
+          class="input-field"
+          placeholder="Replacement text..."
+        >
+        <button type="button" id="regex-replace-btn" class="btn btn-secondary">
+          Replace
+        </button>
+      </div>
+      <div id="regex-substitute-result" class="regex-substitute-result hidden">
+        <label class="regex-label">Result</label>
+        <pre class="regex-result-pre"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Explain Tab -->
+  <div id="explain-tab" class="tab-content hidden">
+    <div class="regex-explain-pattern">
+      <label class="regex-label">Pattern</label>
+      <code id="regex-explain-display" class="regex-explain-code">/[a-z]+\.[a-z]{2,}/gi</code>
+    </div>
+
+    <div id="regex-explanation" class="regex-explanation">
+      <!-- Populated by JavaScript -->
+    </div>
+
+    <div class="regex-explain-hint">
+      <p>Switch to the <strong>Test</strong> tab to try your pattern against sample text.</p>
+    </div>
+  </div>
+
+  <!-- Reference Tab -->
+  <div id="reference-tab" class="tab-content hidden">
+    <div class="regex-reference-grid">
+      <div class="regex-reference-card">
+        <h4>Character Classes</h4>
+        <table class="regex-reference-table">
+          <tr><td><code>.</code></td><td>Any character except newline</td></tr>
+          <tr><td><code>\d</code></td><td>Digit (0-9)</td></tr>
+          <tr><td><code>\D</code></td><td>Non-digit</td></tr>
+          <tr><td><code>\w</code></td><td>Word character (a-z, A-Z, 0-9, _)</td></tr>
+          <tr><td><code>\W</code></td><td>Non-word character</td></tr>
+          <tr><td><code>\s</code></td><td>Whitespace (space, tab, newline)</td></tr>
+          <tr><td><code>\S</code></td><td>Non-whitespace</td></tr>
+          <tr><td><code>[abc]</code></td><td>Any of a, b, or c</td></tr>
+          <tr><td><code>[^abc]</code></td><td>Not a, b, or c</td></tr>
+          <tr><td><code>[a-z]</code></td><td>Character range</td></tr>
+        </table>
+      </div>
+
+      <div class="regex-reference-card">
+        <h4>Anchors & Boundaries</h4>
+        <table class="regex-reference-table">
+          <tr><td><code>^</code></td><td>Start of string/line</td></tr>
+          <tr><td><code>$</code></td><td>End of string/line</td></tr>
+          <tr><td><code>\b</code></td><td>Word boundary</td></tr>
+          <tr><td><code>\B</code></td><td>Non-word boundary</td></tr>
+          <tr><td><code>(?=...)</code></td><td>Positive lookahead</td></tr>
+          <tr><td><code>(?!...)</code></td><td>Negative lookahead</td></tr>
+          <tr><td><code>(?<=...)</code></td><td>Positive lookbehind</td></tr>
+          <tr><td><code>(?<!...)</code></td><td>Negative lookbehind</td></tr>
+        </table>
+      </div>
+
+      <div class="regex-reference-card">
+        <h4>Quantifiers</h4>
+        <table class="regex-reference-table">
+          <tr><td><code>*</code></td><td>0 or more</td></tr>
+          <tr><td><code>+</code></td><td>1 or more</td></tr>
+          <tr><td><code>?</code></td><td>0 or 1 (optional)</td></tr>
+          <tr><td><code>{n}</code></td><td>Exactly n times</td></tr>
+          <tr><td><code>{n,}</code></td><td>n or more times</td></tr>
+          <tr><td><code>{n,m}</code></td><td>Between n and m times</td></tr>
+          <tr><td><code>*?</code></td><td>Lazy (non-greedy) *</td></tr>
+          <tr><td><code>+?</code></td><td>Lazy (non-greedy) +</td></tr>
+        </table>
+      </div>
+
+      <div class="regex-reference-card">
+        <h4>Groups & Capturing</h4>
+        <table class="regex-reference-table">
+          <tr><td><code>(...)</code></td><td>Capturing group</td></tr>
+          <tr><td><code>(?:...)</code></td><td>Non-capturing group</td></tr>
+          <tr><td><code>(?&lt;name&gt;...)</code></td><td>Named capturing group</td></tr>
+          <tr><td><code>\1, \2...</code></td><td>Backreference to group</td></tr>
+          <tr><td><code>\k&lt;name&gt;</code></td><td>Named backreference</td></tr>
+          <tr><td><code>|</code></td><td>Alternation (OR)</td></tr>
+        </table>
+      </div>
+
+      <div class="regex-reference-card">
+        <h4>Flags</h4>
+        <table class="regex-reference-table">
+          <tr><td><code>g</code></td><td>Global (find all matches)</td></tr>
+          <tr><td><code>i</code></td><td>Ignore case</td></tr>
+          <tr><td><code>m</code></td><td>Multiline (^$ match lines)</td></tr>
+          <tr><td><code>s</code></td><td>Dotall (. matches newlines)</td></tr>
+          <tr><td><code>u</code></td><td>Unicode</td></tr>
+          <tr><td><code>y</code></td><td>Sticky (match from lastIndex)</td></tr>
+        </table>
+      </div>
+
+      <div class="regex-reference-card">
+        <h4>Special Characters</h4>
+        <table class="regex-reference-table">
+          <tr><td><code>\</code></td><td>Escape character</td></tr>
+          <tr><td><code>\n</code></td><td>Newline</td></tr>
+          <tr><td><code>\r</code></td><td>Carriage return</td></tr>
+          <tr><td><code>\t</code></td><td>Tab</td></tr>
+          <tr><td><code>\v</code></td><td>Vertical tab</td></tr>
+          <tr><td><code>\f</code></td><td>Form feed</td></tr>
+          <tr><td><code>\0</code></td><td>Null character</td></tr>
+          <tr><td><code>\xhh</code></td><td>Hex character</td></tr>
+          <tr><td><code>\uhhhh</code></td><td>Unicode character</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
