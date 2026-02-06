@@ -1196,6 +1196,11 @@ body {
   min-width: 0;
 }
 
+.chmod-input-grid .select-field {
+  padding: 0.7rem 1rem;
+  font-size: 0.95rem;
+}
+
 .chmod-hint {
   margin-top: 0.5rem;
   font-size: 0.8rem;
