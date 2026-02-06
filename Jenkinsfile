@@ -11,13 +11,6 @@ pipeline {
                 '''
             }
         }
-        stage('Update OUI Database') {
-            steps {
-                sh '''
-                    ./scripts/update-oui-db.sh
-                '''
-            }
-        }
         stage('Build') {
             steps {
                 sh '''
