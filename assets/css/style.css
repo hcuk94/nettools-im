@@ -339,11 +339,11 @@ body {
   min-width: 200px;
 }
 
-/* Hints inside input-groups - don't affect button alignment */
+/* Hints inside input-groups */
 .input-group .mac-hint,
 .input-group .chmod-hint {
   margin-top: 0.5rem;
-  margin-bottom: -1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .input-group .input-wrapper + .btn,
