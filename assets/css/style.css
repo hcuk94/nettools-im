@@ -339,11 +339,17 @@ body {
   min-width: 200px;
 }
 
-/* Hints inside input-groups */
+/* Hints inside input-groups - negative margin aligns buttons with input field */
 .input-group .mac-hint,
 .input-group .chmod-hint {
   margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: -1.5rem;
+}
+
+/* Add space below input-groups that contain hints */
+.input-group:has(.mac-hint),
+.input-group:has(.chmod-hint) {
+  margin-bottom: 2rem;
 }
 
 .input-group .input-wrapper + .btn,
