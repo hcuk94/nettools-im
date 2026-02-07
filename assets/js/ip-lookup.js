@@ -105,6 +105,22 @@
     // Summary
     addSummaryItem('IP', result.ip || '-', true);
 
+    // Friendly classification for non-public IPs
+    const cls = result.ipClassification;
+    if (cls && cls.public === false) {
+      const kindMap = {
+        internal_rfc1918: 'Internal (RFC1918)',
+        internal_ula: 'Internal (IPv6 ULA)',
+        loopback: 'Loopback',
+        link_local: 'Link-local',
+        cgnat: 'CGNAT (100.64.0.0/10)',
+        documentation: 'Documentation range',
+        multicast: 'Multicast',
+        this_network: 'This network'
+      };
+      addSummaryItem('Type', kindMap[cls.kind] || 'Non-public');
+    }
+
     const asnNum = result.geo?.asn?.autonomous_system_number;
     const asnOrg = result.geo?.asn?.autonomous_system_organization;
     if (asnNum) addSummaryItem('ASN', `AS${asnNum}`);
