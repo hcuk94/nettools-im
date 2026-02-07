@@ -1947,6 +1947,14 @@ body {
   line-height: 1.4;
 }
 
+/* Generic hint text for other tools */
+.input-hint {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
 /* Text area for batch input */
 .mac-text-section {
   margin-bottom: 1rem;

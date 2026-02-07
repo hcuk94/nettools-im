@@ -1,0 +1,113 @@
+---
+layout: tool
+title: IP Address Lookup
+description: Look up IP geolocation, ASN, and registration details using RDAP and MaxMind. Runs with a lightweight API backend.
+scripts:
+  - /assets/js/ip-lookup.js
+---
+
+<div class="calculator-section">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="lookup">Lookup</button>
+    <button class="tab-btn" data-tab="about">About</button>
+    <button class="tab-btn" data-tab="raw">Raw Data</button>
+  </div>
+
+  <!-- Lookup Tab -->
+  <div id="lookup-tab" class="tab-content active">
+    <div class="input-group">
+      <div class="input-wrapper">
+        <label for="ip-lookup-input">IP Address</label>
+        <input
+          type="text"
+          id="ip-lookup-input"
+          class="input-field"
+          placeholder="e.g. 1.1.1.1, 8.8.8.8, 2606:4700:4700::1111"
+          autocomplete="off"
+          spellcheck="false"
+          inputmode="text"
+        >
+        <p class="input-hint">Leave blank to look up your current IP</p>
+      </div>
+      <button type="button" id="ip-lookup-btn" class="btn btn-primary">Lookup</button>
+      <button type="button" id="ip-clear-btn" class="btn btn-secondary">Clear</button>
+    </div>
+  </div>
+
+  <!-- About Tab -->
+  <div id="about-tab" class="tab-content hidden">
+    <div class="summary-card">
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="summary-label">Data Sources</span>
+          <span class="summary-value">RDAP + MaxMind</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Privacy</span>
+          <span class="summary-value">No third-party IPinfo services</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Notes</span>
+          <span class="summary-value">Results depend on registry + GeoIP accuracy</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reference-section" style="margin-top:0">
+      <div class="results-header">
+        <h3>What you’ll see</h3>
+      </div>
+      <div class="summary-card">
+        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0.75rem;">
+          This tool combines:
+        </p>
+        <ul style="margin-left: 1.25rem; color: var(--text-secondary); font-size: 0.95rem;">
+          <li><strong>MaxMind</strong> (GeoLite) for geo + ASN metadata</li>
+          <li><strong>RDAP</strong> for registration data (netblocks, org, contacts, abuse)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Raw Tab -->
+  <div id="raw-tab" class="tab-content hidden">
+    <div class="results-header">
+      <h3>Raw JSON</h3>
+      <span class="results-info" id="raw-info">-</span>
+    </div>
+    <div class="results-table-wrapper">
+      <pre id="raw-json" style="margin:0; padding: 1rem; font-family: var(--font-mono); font-size: 0.85rem; white-space: pre-wrap; word-break: break-word;"></pre>
+    </div>
+  </div>
+</div>
+
+<div id="ip-error" class="error-message hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="12" y1="8" x2="12" y2="12"/>
+    <line x1="12" y1="16" x2="12.01" y2="16"/>
+  </svg>
+  <span></span>
+</div>
+
+<div id="ip-loading" class="loading-indicator hidden">
+  <div class="loading-spinner"></div>
+  <span>Looking up IP information...</span>
+</div>
+
+<div id="ip-results" class="results-container hidden">
+  <div class="summary-card">
+    <div id="ip-summary" class="summary-grid"></div>
+  </div>
+
+  <div class="results-header">
+    <h3>Details</h3>
+    <span id="ip-details-info" class="results-info"></span>
+  </div>
+
+  <div class="results-table-wrapper">
+    <table class="results-table">
+      <tbody id="ip-details-body"></tbody>
+    </table>
+  </div>
+</div>
