@@ -198,10 +198,39 @@
       throw err;
     }
 
-    return body;
+    return {
+      data: body,
+      headers: {
+        limit: res.headers.get('x-ratelimit-limit'),
+        remaining: res.headers.get('x-ratelimit-remaining'),
+        reset: res.headers.get('x-ratelimit-reset')
+      }
+    };
   }
 
-  async function lookup(ipInput) {
+  function updateRateLimitMeter(headers) {
+    const card = $('rate-limit-card');
+    const text = $('rate-limit-text');
+    const bar = $('rate-limit-bar');
+
+    if (!card || !text || !bar) return;
+
+    const limit = headers?.limit ? Number(headers.limit) : null;
+    const remaining = headers?.remaining ? Number(headers.remaining) : null;
+
+    if (!Number.isFinite(limit) || !Number.isFinite(remaining)) {
+      text.textContent = '-';
+      bar.style.width = '0%';
+      return;
+    }
+
+    const used = Math.max(0, limit - remaining);
+    const pct = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
+    text.textContent = `${used}/${limit} used (${remaining} remaining)`;
+    bar.style.width = `${pct}%`;
+  }
+
+  async function lookup(ipInput, { updateUrl = true } = {}) {
     clearError();
     $('ip-results').classList.add('hidden');
     showLoading(true);
@@ -209,21 +238,35 @@
     try {
       const ip = (ipInput || '').trim();
 
+      let result;
       if (!ip) {
-        throw new Error('Please enter an IP address');
+        // Default lookup: ask backend for caller IP and lookup that.
+        const me = await fetchJson(`${API_BASE}/me`);
+        const myIp = me?.data?.ip;
+        if (!myIp) throw new Error('Could not determine your current IP');
+        $('ip-lookup-input').value = myIp;
+        result = await fetchJson(`${API_BASE}/lookup?ip=${encodeURIComponent(myIp)}`);
+      } else {
+        if (!isIpLikely(ip)) {
+          throw new Error('Please enter a valid IPv4 or IPv6 address');
+        }
+        result = await fetchJson(`${API_BASE}/lookup?ip=${encodeURIComponent(ip)}`);
       }
 
-      // Basic client-side hint; backend does full validation.
-      if (!isIpLikely(ip)) {
-        throw new Error('Please enter a valid IPv4/IPv6 address');
-      }
-
-      const data = await fetchJson(`${API_BASE}/lookup?ip=${encodeURIComponent(ip)}`);
-      populate(data);
+      updateRateLimitMeter(result.headers);
+      populate(result.data);
       switchTab('lookup');
+
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('ip', $('ip-lookup-input').value.trim());
+        window.history.replaceState({}, '', url.toString());
+      }
     } catch (e) {
       if (e.status === 429) {
         showError('Rate limit hit (24 lookups / 24h). Please try again later.');
+      } else if (e.status === 400) {
+        showError(e.message || 'Please enter a valid IPv4 or IPv6 address');
       } else {
         showError(e.message || 'Lookup failed');
       }
@@ -243,12 +286,41 @@
       if (e.key === 'Enter') lookup($('ip-lookup-input').value);
     });
 
+    // Permalink support: /tools/ip-lookup/?ip=1.1.1.1
+    const params = new URLSearchParams(window.location.search);
+    const prefillIp = params.get('ip');
+    if (prefillIp) {
+      $('ip-lookup-input').value = prefillIp;
+      lookup(prefillIp, { updateUrl: false });
+    } else {
+      // Default lookup: user's current IP
+      lookup('', { updateUrl: true });
+    }
+
     $('ip-clear-btn').addEventListener('click', () => {
       $('ip-lookup-input').value = '';
       $('ip-results').classList.add('hidden');
       clearError();
       $('raw-json').textContent = '';
       $('raw-info').textContent = '-';
+      const url = new URL(window.location.href);
+      url.searchParams.delete('ip');
+      window.history.replaceState({}, '', url.toString());
+    });
+
+    $('ip-link-btn').addEventListener('click', async () => {
+      const ip = $('ip-lookup-input').value.trim();
+      if (!ip) {
+        showError('Look up an IP first to generate a link');
+        return;
+      }
+      const url = new URL(window.location.href);
+      url.searchParams.set('ip', ip);
+      await navigator.clipboard.writeText(url.toString());
+      const btn = $('ip-link-btn');
+      const orig = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(() => (btn.textContent = orig), 1000);
     });
 
     // Optional: auto lookup if user pastes

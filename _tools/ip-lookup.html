@@ -31,6 +31,7 @@ scripts:
       </div>
       <button type="button" id="ip-lookup-btn" class="btn btn-primary">Lookup</button>
       <button type="button" id="ip-clear-btn" class="btn btn-secondary">Clear</button>
+      <button type="button" id="ip-link-btn" class="btn btn-secondary">Copy Link</button>
     </div>
   </div>
 
@@ -103,6 +104,17 @@ scripts:
   <div class="results-header">
     <h3>Details</h3>
     <span id="ip-details-info" class="results-info"></span>
+  </div>
+
+  <div class="summary-card" id="rate-limit-card" style="margin-top: 1rem;">
+    <div class="results-header" style="margin-bottom: 0.75rem;">
+      <h3 style="margin:0;">Usage</h3>
+      <span id="rate-limit-text" class="results-info">-</span>
+    </div>
+    <div style="height:10px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 999px; overflow: hidden;">
+      <div id="rate-limit-bar" style="height:100%; width:0%; background: var(--accent-color);"></div>
+    </div>
+    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.85rem;">Cache hits don’t count towards your daily limit.</p>
   </div>
 
   <div class="results-table-wrapper">
