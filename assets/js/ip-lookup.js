@@ -15,7 +15,7 @@
     }
 
     // Default production base (adjust in backend deploy)
-    return 'https://iplookup.nettools.im';
+    return 'https://api-iplookup.nettools.im';
   }
 
   const API_BASE = getApiBase().replace(/\/$/, '');
