@@ -197,7 +197,7 @@
     
     if (database.generated) {
       const date = new Date(database.generated);
-      $('db-updated').textContent = date.toLocaleDateString();
+      $('db-updated').textContent = date.toISOString().split('T')[0];
     }
   }
 
