@@ -51,10 +51,14 @@
   // Initialize on page load
   function init() {
     // Apply theme immediately to prevent flash
-    applyTheme(getStoredTheme());
+    const theme = getStoredTheme();
+    document.documentElement.setAttribute('data-theme', theme);
 
-    // Set up toggle button
+    // Set up toggle button after DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
+      // Update button text to reflect current theme
+      updateToggleButton(theme);
+      
       const btn = document.querySelector('.theme-toggle');
       if (btn) {
         btn.addEventListener('click', toggleTheme);

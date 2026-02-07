@@ -334,6 +334,30 @@ body {
   align-items: flex-end;
 }
 
+.input-group .input-wrapper {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Hints inside input-groups - negative margin aligns buttons with input field */
+.input-group .mac-hint,
+.input-group .chmod-hint {
+  margin-top: 0.5rem;
+  margin-bottom: -1.5rem;
+}
+
+/* Add space below input-groups that contain hints */
+.input-group:has(.mac-hint),
+.input-group:has(.chmod-hint) {
+  margin-bottom: 2rem;
+}
+
+.input-group .input-wrapper + .btn,
+.input-group .btn {
+  align-self: flex-end;
+  margin-bottom: 0;
+}
+
 .input-wrapper {
   flex: 1;
   min-width: 200px;
@@ -386,6 +410,7 @@ body {
 .btn-primary {
   background-color: var(--accent-color);
   color: #ffffff;
+  border: 1px solid var(--accent-color);
 }
 
 .btn-primary:hover {
@@ -404,11 +429,45 @@ body {
 
 /* Tab Navigation */
 .tab-nav {
+  position: relative;
   display: flex;
   gap: 0.25rem;
   margin-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  -ms-overflow-style: none;
+}
+
+.tab-nav::-webkit-scrollbar {
+  height: 0;
+  display: none;
+}
+
+.tab-btn {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Scroll indicator for tabs - gradient fade on mobile */
+.calculator-section {
+  position: relative;
+}
+
+.calculator-section::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 1.75rem;
+  width: 40px;
+  height: 2.5rem;
+  display: none;
+  background: linear-gradient(to right, transparent, var(--bg-secondary));
+  pointer-events: none;
+  z-index: 1;
 }
 
 .tab-btn {
@@ -619,12 +678,35 @@ body {
     display: none;
   }
   
-  .input-group {
-    flex-direction: column;
+  /* Show scroll indicator on mobile for tabs */
+  .calculator-section::before {
+    display: block;
   }
   
-  .input-wrapper {
+  .input-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .input-group .input-wrapper {
+    flex: 1 1 100%;
     min-width: 100%;
+  }
+  
+  .input-group .btn {
+    flex: 0 0 auto;
+  }
+  
+  /* On mobile, don't use negative margin for hints - causes text cutoff */
+  .input-group .mac-hint,
+  .input-group .chmod-hint {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Remove extra spacing on mobile since buttons stack */
+  .input-group:has(.mac-hint),
+  .input-group:has(.chmod-hint) {
+    margin-bottom: 0;
   }
   
   .summary-grid {
@@ -1850,5 +1932,462 @@ body {
 
   .regex-substitute-row .input-field {
     min-width: 100%;
+  }
+}
+
+/* ============================================
+   MAC Vendor Lookup Styles
+   ============================================ */
+
+/* Hint text */
+.mac-hint {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Text area for batch input */
+.mac-text-section {
+  margin-bottom: 1rem;
+}
+
+.mac-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.mac-text-area {
+  width: 100%;
+  min-height: 150px;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  resize: vertical;
+  transition: border-color var(--transition-speed);
+}
+
+.mac-text-area:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+/* Loading indicator */
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* MAC badges */
+.mac-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.mac-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 4px;
+}
+
+.mac-badge.unicast {
+  background-color: rgba(0, 102, 204, 0.1);
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+}
+
+.mac-badge.multicast {
+  background-color: rgba(156, 39, 176, 0.1);
+  color: #9c27b0;
+  border: 1px solid #9c27b0;
+}
+
+.mac-badge.broadcast {
+  background-color: rgba(255, 152, 0, 0.1);
+  color: #ff9800;
+  border: 1px solid #ff9800;
+}
+
+.mac-badge.local {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: #f59e0b;
+  border: 1px solid #f59e0b;
+}
+
+.mac-badge.global {
+  background-color: rgba(25, 135, 84, 0.1);
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
+}
+
+.mac-badge.success {
+  background-color: rgba(25, 135, 84, 0.1);
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
+}
+
+.mac-badge.warning {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: #f59e0b;
+  border: 1px solid #f59e0b;
+}
+
+.mac-badge.error {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+}
+
+/* MAC details section */
+.mac-details-section {
+  margin-top: 1.5rem;
+}
+
+/* Format conversions */
+.mac-formats {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.mac-formats h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.mac-format-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mac-format-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mac-format-row:last-child {
+  border-bottom: none;
+}
+
+.mac-format-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  min-width: 120px;
+}
+
+.mac-format-value {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--accent-color);
+  background-color: var(--bg-tertiary);
+  padding: 0.35rem 0.6rem;
+  border-radius: 4px;
+}
+
+.mac-copy-btn {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+/* Info boxes */
+.mac-not-found-info,
+.mac-local-info {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+.mac-not-found-info p,
+.mac-local-info p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.mac-not-found-info ul,
+.mac-local-info ul {
+  margin-left: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.mac-not-found-info li,
+.mac-local-info li {
+  margin-bottom: 0.35rem;
+}
+
+/* Database info section */
+.db-info-section {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.db-info-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  flex: 1;
+}
+
+.db-info-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.db-info-value {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.db-info-sublabel {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* Reference section */
+.mac-reference-section h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+/* MAC structure diagram */
+.mac-structure-diagram {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1.5rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.mac-byte-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mac-bytes {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.mac-byte {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.mac-byte.oui {
+  background-color: rgba(0, 102, 204, 0.15);
+  color: var(--accent-color);
+  border: 2px solid var(--accent-color);
+}
+
+.mac-byte.nic {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 2px solid var(--border-color);
+}
+
+.mac-byte-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Special bits cards */
+.mac-special-bits {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.mac-bit-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+.mac-bit-card h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.mac-bit-card p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+
+.mac-bit-card code {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background-color: var(--bg-tertiary);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  word-break: break-all;
+}
+
+/* MAC formats grid (reference) */
+.mac-formats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.mac-format-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.mac-format-item code {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.mac-format-item span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Highlight in summary */
+.summary-value.highlight {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+/* MAC Lookup responsive */
+@media (max-width: 900px) {
+  .mac-structure-diagram {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .mac-format-row {
+    flex-wrap: wrap;
+  }
+  
+  .mac-format-label {
+    min-width: 100%;
+    margin-bottom: 0.25rem;
+  }
+  
+  .db-info-section {
+    flex-wrap: wrap;
+  }
+  
+  .db-info-card {
+    min-width: calc(50% - 0.5rem);
+  }
+}
+
+@media (max-width: 600px) {
+  .mac-byte {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+  
+  .mac-format-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .mac-format-value {
+    width: 100%;
+  }
+  
+  .mac-copy-btn {
+    width: 100%;
+  }
+  
+  .db-info-card {
+    min-width: 100%;
+  }
+  
+  .mac-formats-grid {
+    grid-template-columns: 1fr;
   }
 }
