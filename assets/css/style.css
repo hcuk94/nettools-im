@@ -337,22 +337,13 @@ body {
 .input-group .input-wrapper {
   flex: 1;
   min-width: 200px;
-  position: relative;
 }
 
-/* When input-wrapper has a hint, add padding and make hint absolute */
-.input-group .input-wrapper:has(.mac-hint),
-.input-group .input-wrapper:has(.chmod-hint) {
-  padding-bottom: 1.6rem;
-}
-
+/* Hints inside input-groups - don't affect button alignment */
 .input-group .mac-hint,
 .input-group .chmod-hint {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin-top: 0;
+  margin-top: 0.5rem;
+  margin-bottom: -1.5rem;
 }
 
 .input-group .input-wrapper + .btn,
@@ -413,6 +404,7 @@ body {
 .btn-primary {
   background-color: var(--accent-color);
   color: #ffffff;
+  border: 1px solid var(--accent-color);
 }
 
 .btn-primary:hover {
@@ -464,25 +456,12 @@ body {
   position: absolute;
   right: 0;
   top: 1.75rem;
-  width: 50px;
+  width: 40px;
   height: 2.5rem;
   display: none;
-  background: linear-gradient(to right, transparent, var(--bg-secondary) 70%);
+  background: linear-gradient(to right, transparent, var(--bg-secondary));
   pointer-events: none;
   z-index: 1;
-}
-
-.calculator-section::after {
-  content: '→';
-  position: absolute;
-  right: 0.25rem;
-  top: 1.95rem;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  display: none;
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0.7;
 }
 
 .tab-btn {
@@ -694,8 +673,7 @@ body {
   }
   
   /* Show scroll indicator on mobile for tabs */
-  .calculator-section::before,
-  .calculator-section::after {
+  .calculator-section::before {
     display: block;
   }
   
