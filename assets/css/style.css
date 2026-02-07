@@ -337,19 +337,27 @@ body {
 .input-group .input-wrapper {
   flex: 1;
   min-width: 200px;
+  position: relative;
 }
 
-/* Hints inside input-groups - negative margin aligns buttons with input field */
-.input-group .mac-hint,
-.input-group .chmod-hint {
-  margin-top: 0.5rem;
-  margin-bottom: -1.5rem;
-}
-
-/* Add space below input-groups that contain hints */
+/* Hints in input-groups
+   We position hints absolutely so they don't affect button alignment.
+   The input-group gets padding-bottom to make space for the hint text. */
 .input-group:has(.mac-hint),
-.input-group:has(.chmod-hint) {
-  margin-bottom: 2rem;
+.input-group:has(.chmod-hint),
+.input-group:has(.input-hint) {
+  padding-bottom: 1.8rem;
+}
+
+.input-group .mac-hint,
+.input-group .chmod-hint,
+.input-group .input-hint {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
 }
 
 .input-group .input-wrapper + .btn,
@@ -697,16 +705,11 @@ body {
     flex: 0 0 auto;
   }
   
-  /* On mobile, don't use negative margin for hints - causes text cutoff */
-  .input-group .mac-hint,
-  .input-group .chmod-hint {
-    margin-bottom: 0.5rem;
-  }
-  
-  /* Remove extra spacing on mobile since buttons stack */
+  /* More space for hints on mobile */
   .input-group:has(.mac-hint),
-  .input-group:has(.chmod-hint) {
-    margin-bottom: 0;
+  .input-group:has(.chmod-hint),
+  .input-group:has(.input-hint) {
+    padding-bottom: 2.4rem;
   }
   
   .summary-grid {
