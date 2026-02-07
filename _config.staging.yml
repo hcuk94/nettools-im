@@ -10,6 +10,9 @@ encoding: utf-8 # Make sure the encoding is right
 lang: en-GB
 branch: staging
 
+# External API services
+iplookup_api_base: "https://api-iplookup-sg.nettools.im"
+
 # Build settings
 markdown: kramdown
 permalink: pretty
