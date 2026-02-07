@@ -697,6 +697,18 @@ body {
     flex: 0 0 auto;
   }
   
+  /* On mobile, don't use negative margin for hints - causes text cutoff */
+  .input-group .mac-hint,
+  .input-group .chmod-hint {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Remove extra spacing on mobile since buttons stack */
+  .input-group:has(.mac-hint),
+  .input-group:has(.chmod-hint) {
+    margin-bottom: 0;
+  }
+  
   .summary-grid {
     grid-template-columns: 1fr 1fr;
   }
