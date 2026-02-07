@@ -334,6 +334,17 @@ body {
   align-items: flex-end;
 }
 
+.input-group .input-wrapper {
+  flex: 1;
+  min-width: 200px;
+}
+
+.input-group .input-wrapper + .btn,
+.input-group .btn {
+  align-self: flex-end;
+  margin-bottom: 0;
+}
+
 .input-wrapper {
   flex: 1;
   min-width: 200px;
@@ -409,6 +420,27 @@ body {
   margin-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.tab-nav::-webkit-scrollbar {
+  height: 4px;
+}
+
+.tab-nav::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+.tab-nav::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 2px;
+}
+
+.tab-btn {
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .tab-btn {
@@ -620,11 +652,17 @@ body {
   }
   
   .input-group {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
   
-  .input-wrapper {
+  .input-group .input-wrapper {
+    flex: 1 1 100%;
     min-width: 100%;
+  }
+  
+  .input-group .btn {
+    flex: 0 0 auto;
   }
   
   .summary-grid {
