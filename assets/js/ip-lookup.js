@@ -104,49 +104,66 @@
 
     // Summary
     addSummaryItem('IP', result.ip || '-', true);
-    if (result.asn?.number) addSummaryItem('ASN', `AS${result.asn.number}`);
-    if (result.asn?.org) addSummaryItem('ASN Org', result.asn.org);
-    if (result.geo?.country?.name) addSummaryItem('Country', result.geo.country.name);
-    if (result.geo?.city) addSummaryItem('City', result.geo.city);
-    if (result.geo?.timezone) addSummaryItem('Timezone', result.geo.timezone);
 
-    $('ip-details-info').textContent = result.cached ? 'cached' : 'live';
+    const asnNum = result.geo?.asn?.autonomous_system_number;
+    const asnOrg = result.geo?.asn?.autonomous_system_organization;
+    if (asnNum) addSummaryItem('ASN', `AS${asnNum}`);
+    if (asnOrg) addSummaryItem('ASN Org', asnOrg);
+
+    const country = result.geo?.city?.country;
+    const city = result.geo?.city?.city;
+    const tz = result.geo?.city?.location?.time_zone;
+    if (country) addSummaryItem('Country', country);
+    if (city) addSummaryItem('City', city);
+    if (tz) addSummaryItem('Timezone', tz);
+
+    $('ip-details-info').textContent = result.rdapSource ? result.rdapSource : '-';
 
     // Details table
-    addDetailRow('IP Version', fmtMaybe(result.version), true);
-    addDetailRow('Source', fmtMaybe(result.source));
+    addDetailRow('RDAP Source', fmtMaybe(result.rdapSource));
+    if (result.rdapFetchedAt) addDetailRow('RDAP Fetched At', fmtMaybe(new Date(result.rdapFetchedAt).toISOString()), true);
 
-    if (result.geo) {
-      addDetailRow('Continent', fmtMaybe(result.geo.continent?.name));
-      addDetailRow('Country ISO', fmtMaybe(result.geo.country?.iso_code), true);
-      addDetailRow('Region', fmtMaybe(result.geo.region));
-      addDetailRow('Postal', fmtMaybe(result.geo.postal));
-      if (result.geo.location?.lat != null && result.geo.location?.lon != null) {
-        addDetailRow('Location', `${result.geo.location.lat}, ${result.geo.location.lon}`, true);
-      }
-      if (result.geo.location?.accuracy_radius_km != null) {
-        addDetailRow('Accuracy Radius', `${result.geo.location.accuracy_radius_km} km`);
-      }
+    if (result.geo?.asn) {
+      addDetailRow('ASN', asnNum ? `AS${escapeHtml(String(asnNum))}` : '-', true);
+      addDetailRow('ASN Org', fmtMaybe(asnOrg));
     }
 
-    if (result.asn) {
-      addDetailRow('ASN', result.asn.number ? `AS${escapeHtml(String(result.asn.number))}` : '-', true);
-      addDetailRow('ASN Org', fmtMaybe(result.asn.org));
+    if (result.geo?.city) {
+      const c = result.geo.city;
+      addDetailRow('Continent', fmtMaybe(c.continent));
+      addDetailRow('Country', fmtMaybe(c.country));
+      addDetailRow('Country ISO', fmtMaybe(c.country_iso_code), true);
+      addDetailRow('Registered Country', fmtMaybe(c.registered_country));
+      addDetailRow('Region', fmtMaybe(c.region));
+      addDetailRow('Region ISO', fmtMaybe(c.region_iso_code), true);
+      addDetailRow('City', fmtMaybe(c.city));
+      addDetailRow('Postal', fmtMaybe(c.postal));
+      if (c.location?.latitude != null && c.location?.longitude != null) {
+        addDetailRow('Location', `${c.location.latitude}, ${c.location.longitude}`, true);
+      }
+      if (c.location?.time_zone) {
+        addDetailRow('Time Zone', fmtMaybe(c.location.time_zone));
+      }
+      if (c.location?.accuracy_radius != null) {
+        addDetailRow('Accuracy Radius', `${c.location.accuracy_radius} km`);
+      }
     }
 
     if (result.rdap) {
-      addDetailRow('RDAP Name', fmtMaybe(result.rdap.name));
-      addDetailRow('RDAP Handle', fmtMaybe(result.rdap.handle), true);
-      addDetailRow('RDAP Type', fmtMaybe(result.rdap.type));
-      if (result.rdap.cidr) addDetailRow('CIDR', fmtMaybe(result.rdap.cidr), true);
+      // We keep RDAP largely raw, but surface a few common fields if present
+      if (result.rdap.handle) addDetailRow('RDAP Handle', fmtMaybe(result.rdap.handle), true);
+      if (result.rdap.name) addDetailRow('RDAP Name', fmtMaybe(result.rdap.name));
+      if (result.rdap.type) addDetailRow('RDAP Type', fmtMaybe(result.rdap.type));
       if (result.rdap.startAddress) addDetailRow('Start', fmtMaybe(result.rdap.startAddress), true);
       if (result.rdap.endAddress) addDetailRow('End', fmtMaybe(result.rdap.endAddress), true);
       if (result.rdap.status?.length) addDetailRow('Status', fmtList(result.rdap.status));
-      if (result.rdap.parentHandle) addDetailRow('Parent Handle', fmtMaybe(result.rdap.parentHandle), true);
-      if (result.rdap.rir) addDetailRow('Registry', fmtMaybe(result.rdap.rir));
-      if (result.rdap.links?.rdap) addDetailRow('RDAP URL', linkify(result.rdap.links.rdap));
-      if (result.rdap.abuseEmail) addDetailRow('Abuse Email', `<span style="font-family: var(--font-mono);">${escapeHtml(result.rdap.abuseEmail)}</span>`);
-      if (result.rdap.abusePhone) addDetailRow('Abuse Phone', `<span style="font-family: var(--font-mono);">${escapeHtml(result.rdap.abusePhone)}</span>`);
+    }
+
+    if (result.maxmind) {
+      addDetailRow('MaxMind City DB', fmtMaybe(result.maxmind.cityDbPath), true);
+      addDetailRow('MaxMind ASN DB', fmtMaybe(result.maxmind.asnDbPath), true);
+      addDetailRow('City Loaded', fmtMaybe(result.maxmind.cityLoaded));
+      addDetailRow('ASN Loaded', fmtMaybe(result.maxmind.asnLoaded));
     }
 
     // Raw
@@ -192,18 +209,16 @@
     try {
       const ip = (ipInput || '').trim();
 
-      // Prefer /v1/me for blank lookups.
-      let data;
       if (!ip) {
-        data = await fetchJson(`${API_BASE}/v1/me`);
-      } else {
-        // Basic client-side hint; backend does full validation.
-        if (!isIpLikely(ip)) {
-          throw new Error('Please enter a valid IPv4/IPv6 address');
-        }
-        data = await fetchJson(`${API_BASE}/v1/ip/${encodeURIComponent(ip)}`);
+        throw new Error('Please enter an IP address');
       }
 
+      // Basic client-side hint; backend does full validation.
+      if (!isIpLikely(ip)) {
+        throw new Error('Please enter a valid IPv4/IPv6 address');
+      }
+
+      const data = await fetchJson(`${API_BASE}/lookup?ip=${encodeURIComponent(ip)}`);
       populate(data);
       switchTab('lookup');
     } catch (e) {
