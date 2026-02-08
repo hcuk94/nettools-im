@@ -36,7 +36,7 @@ pipeline {
                     sh '''
                         cd _site
                         ls -lh
-                        rsync -rvz -e "ssh -o StrictHostKeyChecking=no -o IdentityFile=${SSH_KEY}" * cicduser@${DEPLOY_SERVER}:${DEPLOY_PATH}
+                        rsync -rvz -e "ssh -o StrictHostKeyChecking=no -o IdentityFile=${SSH_KEY}" * cicduser@${DEPLOY_SERVER}:${DEPLOY_PATH} --delete-after
                     '''
                 }
             }
@@ -52,7 +52,7 @@ pipeline {
                     sh '''
                         cd _site
                         ls -lh
-                        rsync -rvz -e "ssh -o StrictHostKeyChecking=no -o IdentityFile=${SSH_KEY}" * cicduser@${DEPLOY_SERVER}:${DEPLOY_PATH}
+                        rsync -rvz -e "ssh -o StrictHostKeyChecking=no -o IdentityFile=${SSH_KEY}" * cicduser@${DEPLOY_SERVER}:${DEPLOY_PATH} --delete-after
                     '''
                 }
             }
