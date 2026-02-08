@@ -242,7 +242,7 @@
 
     const used = Math.max(0, limit - remaining);
     const pct = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
-    text.textContent = `${used}/${limit} used (${remaining} remaining)`;
+    text.textContent = `${used}/${limit} used today (${remaining} remaining)`;
     bar.style.width = `${pct}%`;
   }
 
