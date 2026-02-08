@@ -551,18 +551,61 @@
   // Initialization
   // ============================================
 
+  function updatePermalink() {
+    const inputEl = document.getElementById('ip-input');
+    if (!inputEl) return;
+    const value = (inputEl.value || '').trim();
+
+    const url = new URL(window.location.href);
+    if (value) {
+      url.searchParams.set('ip', value);
+    } else {
+      url.searchParams.delete('ip');
+    }
+
+    // Remember which tab the user is on (ipv4/ipv6)
+    const activeBtn = document.querySelector('.tab-btn.active');
+    const tab = activeBtn?.dataset?.tab;
+    if (tab) url.searchParams.set('tab', tab);
+
+    window.history.replaceState({}, '', url.toString());
+  }
+
+  async function copyPermalink() {
+    const inputEl = document.getElementById('ip-input');
+    const value = (inputEl?.value || '').trim();
+    if (!value) {
+      showError('Enter an IP/subnet first to generate a link');
+      return;
+    }
+
+    updatePermalink();
+    await navigator.clipboard.writeText(window.location.href);
+
+    const btn = document.getElementById('subnet-link-btn');
+    if (btn) {
+      const orig = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(() => (btn.textContent = orig), 1000);
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
     // Tab switching
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         switchTab(this.dataset.tab);
+        updatePermalink();
       });
     });
     
     // Calculate button
     const calcBtn = document.getElementById('calculate-btn');
     if (calcBtn) {
-      calcBtn.addEventListener('click', calculate);
+      calcBtn.addEventListener('click', () => {
+        calculate();
+        updatePermalink();
+      });
     }
     
     // Enter key to calculate
@@ -571,6 +614,7 @@
       input.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           calculate();
+          updatePermalink();
         }
       });
     }
@@ -582,7 +626,30 @@
         document.getElementById('ip-input').value = '';
         document.getElementById('results-container').classList.add('hidden');
         hideError();
+        updatePermalink();
       });
     }
+
+    // Copy link button
+    const linkBtn = document.getElementById('subnet-link-btn');
+    if (linkBtn) {
+      linkBtn.addEventListener('click', copyPermalink);
+    }
+
+    // Permalink support: /tools/subnet-calculator/?ip=...&tab=ipv4|ipv6
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab === 'ipv6' || tab === 'ipv4') {
+      switchTab(tab);
+    }
+
+    const prefill = params.get('ip');
+    if (prefill) {
+      const inputEl = document.getElementById('ip-input');
+      inputEl.value = prefill;
+      calculate();
+    }
+
+    updatePermalink();
   });
 })();

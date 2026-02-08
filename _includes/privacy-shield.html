@@ -5,16 +5,22 @@
 {%- if privacy == 'browser' -%}
   <span class="privacy-shield privacy-shield--browser"{% if title %} title="{{ title }}"{% endif %}>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: {{ size }}px; height: {{ size }}px;">
-      <path d="M12 2l7 4v6c0 5-3 9-7 10-4-1-7-5-7-10V6l7-4z"/>
-      <path d="M9 12l2 2 4-5"/>
+      <!-- Slight horizontal scale to avoid the shield feeling 'squished' in small sizes -->
+      <g transform="translate(12,12) scale(1.08,1) translate(-12,-12)">
+        <path d="M12 2l7 4v6c0 5-3 9-7 10-4-1-7-5-7-10V6l7-4z"/>
+        <path d="M9 12l2 2 4-5"/>
+      </g>
     </svg>
   </span>
 {%- else -%}
   <span class="privacy-shield privacy-shield--thirdparty"{% if title %} title="{{ title }}"{% endif %}>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: {{ size }}px; height: {{ size }}px;">
-      <path d="M12 2l7 4v6c0 5-3 9-7 10-4-1-7-5-7-10V6l7-4z"/>
-      <path d="M12 8v5"/>
-      <path d="M12 16h0" stroke-width="3" stroke-linecap="round"/>
+      <!-- Slight horizontal scale to avoid the shield feeling 'squished' in small sizes -->
+      <g transform="translate(12,12) scale(1.08,1) translate(-12,-12)">
+        <path d="M12 2l7 4v6c0 5-3 9-7 10-4-1-7-5-7-10V6l7-4z"/>
+        <path d="M12 8v5"/>
+        <path d="M12 16h0" stroke-width="3" stroke-linecap="round"/>
+      </g>
     </svg>
   </span>
 {%- endif -%}
