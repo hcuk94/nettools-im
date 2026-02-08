@@ -3,14 +3,6 @@ pipeline {
         label 'docker-agent-jekyll'
     }
     stages {
-        stage('Apply Staging Config') {
-            when { branch 'staging' }
-            steps {
-                sh '''
-                    cp _config.staging.yml _config.yml
-                '''
-            }
-        }
         stage('Update OUI Database') {
             steps {
                 sh '''
@@ -22,7 +14,14 @@ pipeline {
             steps {
                 sh '''
                     bundle install
-                    jekyll build
+
+                    # IMPORTANT: do not overwrite tracked _config.yml in the workspace.
+                    # For staging, merge configs at build-time instead.
+                    if [ "${BRANCH_NAME}" = "staging" ]; then
+                      jekyll build --config _config.yml,_config.staging.yml
+                    else
+                      jekyll build
+                    fi
                 '''
             }
         }
