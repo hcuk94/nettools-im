@@ -37,3 +37,4 @@ exclude:
   - Gemfile.lock
   - README.md
   - Jenkinsfile
+  - scripts
