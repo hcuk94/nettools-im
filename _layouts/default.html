@@ -13,9 +13,15 @@
   
   <!-- Styles -->
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/privacy.css' | relative_url }}">
   
   <!-- Theme Script (loads early to prevent flash) -->
   <script src="{{ '/assets/js/theme.js' | relative_url }}"></script>
+
+  <!-- Runtime config for tools -->
+  <script>
+    window.NETTOOLS_IPLOOKUP_API_BASE = "{{ site.iplookup_api_base | default: '' }}";
+  </script>
   
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
