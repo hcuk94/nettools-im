@@ -625,7 +625,9 @@ body {
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--text-primary);
-  word-break: break-all;
+  /* Avoid wrapping in the middle of words (e.g. "services"). */
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 /* Error State */
