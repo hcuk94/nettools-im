@@ -104,49 +104,82 @@
 
     // Summary
     addSummaryItem('IP', result.ip || '-', true);
-    if (result.asn?.number) addSummaryItem('ASN', `AS${result.asn.number}`);
-    if (result.asn?.org) addSummaryItem('ASN Org', result.asn.org);
-    if (result.geo?.country?.name) addSummaryItem('Country', result.geo.country.name);
-    if (result.geo?.city) addSummaryItem('City', result.geo.city);
-    if (result.geo?.timezone) addSummaryItem('Timezone', result.geo.timezone);
 
-    $('ip-details-info').textContent = result.cached ? 'cached' : 'live';
-
-    // Details table
-    addDetailRow('IP Version', fmtMaybe(result.version), true);
-    addDetailRow('Source', fmtMaybe(result.source));
-
-    if (result.geo) {
-      addDetailRow('Continent', fmtMaybe(result.geo.continent?.name));
-      addDetailRow('Country ISO', fmtMaybe(result.geo.country?.iso_code), true);
-      addDetailRow('Region', fmtMaybe(result.geo.region));
-      addDetailRow('Postal', fmtMaybe(result.geo.postal));
-      if (result.geo.location?.lat != null && result.geo.location?.lon != null) {
-        addDetailRow('Location', `${result.geo.location.lat}, ${result.geo.location.lon}`, true);
-      }
-      if (result.geo.location?.accuracy_radius_km != null) {
-        addDetailRow('Accuracy Radius', `${result.geo.location.accuracy_radius_km} km`);
-      }
+    // Friendly classification for non-public IPs
+    const cls = result.ipClassification;
+    if (cls && cls.public === false) {
+      const kindMap = {
+        internal_rfc1918: 'Internal (RFC1918)',
+        internal_ula: 'Internal (IPv6 ULA)',
+        loopback: 'Loopback',
+        link_local: 'Link-local',
+        cgnat: 'CGNAT (100.64.0.0/10)',
+        documentation: 'Documentation range',
+        multicast: 'Multicast',
+        this_network: 'This network'
+      };
+      addSummaryItem('Type', kindMap[cls.kind] || 'Non-public');
     }
 
-    if (result.asn) {
-      addDetailRow('ASN', result.asn.number ? `AS${escapeHtml(String(result.asn.number))}` : '-', true);
-      addDetailRow('ASN Org', fmtMaybe(result.asn.org));
+    const asnNum = result.geo?.asn?.autonomous_system_number;
+    const asnOrg = result.geo?.asn?.autonomous_system_organization;
+    if (asnNum) addSummaryItem('ASN', `AS${asnNum}`);
+    if (asnOrg) addSummaryItem('ASN Org', asnOrg);
+
+    const country = result.geo?.city?.country;
+    const city = result.geo?.city?.city;
+    const tz = result.geo?.city?.location?.time_zone;
+    if (country) addSummaryItem('Country', country);
+    if (city) addSummaryItem('City', city);
+    if (tz) addSummaryItem('Timezone', tz);
+
+    $('ip-details-info').textContent = result.rdapSource ? result.rdapSource : '-';
+
+    // Details table
+    addDetailRow('RDAP Source', fmtMaybe(result.rdapSource));
+    if (result.rdapFetchedAt) addDetailRow('RDAP Fetched At', fmtMaybe(new Date(result.rdapFetchedAt).toISOString()), true);
+
+    if (result.geo?.asn) {
+      addDetailRow('ASN', asnNum ? `AS${escapeHtml(String(asnNum))}` : '-', true);
+      addDetailRow('ASN Org', fmtMaybe(asnOrg));
+    }
+
+    if (result.geo?.city) {
+      const c = result.geo.city;
+      addDetailRow('Continent', fmtMaybe(c.continent));
+      addDetailRow('Country', fmtMaybe(c.country));
+      addDetailRow('Country ISO', fmtMaybe(c.country_iso_code), true);
+      addDetailRow('Registered Country', fmtMaybe(c.registered_country));
+      addDetailRow('Region', fmtMaybe(c.region));
+      addDetailRow('Region ISO', fmtMaybe(c.region_iso_code), true);
+      addDetailRow('City', fmtMaybe(c.city));
+      addDetailRow('Postal', fmtMaybe(c.postal));
+      if (c.location?.latitude != null && c.location?.longitude != null) {
+        addDetailRow('Location', `${c.location.latitude}, ${c.location.longitude}`, true);
+      }
+      if (c.location?.time_zone) {
+        addDetailRow('Time Zone', fmtMaybe(c.location.time_zone));
+      }
+      if (c.location?.accuracy_radius != null) {
+        addDetailRow('Accuracy Radius', `${c.location.accuracy_radius} km`);
+      }
     }
 
     if (result.rdap) {
-      addDetailRow('RDAP Name', fmtMaybe(result.rdap.name));
-      addDetailRow('RDAP Handle', fmtMaybe(result.rdap.handle), true);
-      addDetailRow('RDAP Type', fmtMaybe(result.rdap.type));
-      if (result.rdap.cidr) addDetailRow('CIDR', fmtMaybe(result.rdap.cidr), true);
+      // We keep RDAP largely raw, but surface a few common fields if present
+      if (result.rdap.handle) addDetailRow('RDAP Handle', fmtMaybe(result.rdap.handle), true);
+      if (result.rdap.name) addDetailRow('RDAP Name', fmtMaybe(result.rdap.name));
+      if (result.rdap.type) addDetailRow('RDAP Type', fmtMaybe(result.rdap.type));
       if (result.rdap.startAddress) addDetailRow('Start', fmtMaybe(result.rdap.startAddress), true);
       if (result.rdap.endAddress) addDetailRow('End', fmtMaybe(result.rdap.endAddress), true);
       if (result.rdap.status?.length) addDetailRow('Status', fmtList(result.rdap.status));
-      if (result.rdap.parentHandle) addDetailRow('Parent Handle', fmtMaybe(result.rdap.parentHandle), true);
-      if (result.rdap.rir) addDetailRow('Registry', fmtMaybe(result.rdap.rir));
-      if (result.rdap.links?.rdap) addDetailRow('RDAP URL', linkify(result.rdap.links.rdap));
-      if (result.rdap.abuseEmail) addDetailRow('Abuse Email', `<span style="font-family: var(--font-mono);">${escapeHtml(result.rdap.abuseEmail)}</span>`);
-      if (result.rdap.abusePhone) addDetailRow('Abuse Phone', `<span style="font-family: var(--font-mono);">${escapeHtml(result.rdap.abusePhone)}</span>`);
+    }
+
+    if (result.maxmind) {
+      addDetailRow('MaxMind City DB', fmtMaybe(result.maxmind.cityDbPath), true);
+      addDetailRow('MaxMind ASN DB', fmtMaybe(result.maxmind.asnDbPath), true);
+      addDetailRow('City Loaded', fmtMaybe(result.maxmind.cityLoaded));
+      addDetailRow('ASN Loaded', fmtMaybe(result.maxmind.asnLoaded));
     }
 
     // Raw
@@ -174,17 +207,49 @@
     }
 
     if (!res.ok) {
-      const msg = body?.error || body?.message || `Request failed (${res.status})`;
+      // Prefer human-friendly message from API over machine error codes.
+      const msg = body?.message || body?.error || `Request failed (${res.status})`;
       const err = new Error(msg);
       err.status = res.status;
       err.body = body;
       throw err;
     }
 
-    return body;
+    return {
+      data: body,
+      headers: {
+        limit: res.headers.get('x-ratelimit-limit'),
+        remaining: res.headers.get('x-ratelimit-remaining'),
+        reset: res.headers.get('x-ratelimit-reset')
+      }
+    };
   }
 
-  async function lookup(ipInput) {
+  function updateRateLimitMeter(rateLimit) {
+    const card = $('rate-limit-card');
+    const text = $('rate-limit-text');
+    const bar = $('rate-limit-bar');
+
+    if (!card || !text || !bar) return;
+
+    const limit = rateLimit?.limit != null ? Number(rateLimit.limit) : null;
+    const remaining = rateLimit?.remaining != null ? Number(rateLimit.remaining) : null;
+    const used = rateLimit?.used != null ? Number(rateLimit.used) : null;
+
+    // If the API didn't include rate limit info, leave the meter blank.
+    if (!Number.isFinite(limit) || !Number.isFinite(remaining)) {
+      text.textContent = '-';
+      bar.style.width = '0%';
+      return;
+    }
+
+    const used2 = Number.isFinite(used) ? Math.max(0, used) : Math.max(0, limit - remaining);
+    const pct = limit > 0 ? Math.min(100, Math.round((used2 / limit) * 100)) : 0;
+    text.textContent = `${used2}/${limit} used today (${remaining} remaining)`;
+    bar.style.width = `${pct}%`;
+  }
+
+  async function lookup(ipInput, { updateUrl = true } = {}) {
     clearError();
     $('ip-results').classList.add('hidden');
     showLoading(true);
@@ -192,23 +257,39 @@
     try {
       const ip = (ipInput || '').trim();
 
-      // Prefer /v1/me for blank lookups.
-      let data;
+      let result;
       if (!ip) {
-        data = await fetchJson(`${API_BASE}/v1/me`);
+        // Default lookup: ask backend for caller IP and lookup that.
+        const me = await fetchJson(`${API_BASE}/me`);
+        const myIp = me?.data?.ip;
+        if (!myIp) throw new Error('Could not determine your current IP');
+        $('ip-lookup-input').value = myIp;
+        result = await fetchJson(`${API_BASE}/lookup?ip=${encodeURIComponent(myIp)}`);
       } else {
-        // Basic client-side hint; backend does full validation.
         if (!isIpLikely(ip)) {
-          throw new Error('Please enter a valid IPv4/IPv6 address');
+          throw new Error('Please enter a valid IPv4 or IPv6 address');
         }
-        data = await fetchJson(`${API_BASE}/v1/ip/${encodeURIComponent(ip)}`);
+        result = await fetchJson(`${API_BASE}/lookup?ip=${encodeURIComponent(ip)}`);
       }
 
-      populate(data);
+      // Prefer API-provided rate limit values; fallback to headers for backwards compat.
+      updateRateLimitMeter(result.data?.rateLimit || {
+        limit: result.headers?.limit,
+        remaining: result.headers?.remaining
+      });
+      populate(result.data);
       switchTab('lookup');
+
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('ip', $('ip-lookup-input').value.trim());
+        window.history.replaceState({}, '', url.toString());
+      }
     } catch (e) {
       if (e.status === 429) {
         showError('Rate limit hit (24 lookups / 24h). Please try again later.');
+      } else if (e.status === 400) {
+        showError(e.message || 'Please enter a valid IPv4 or IPv6 address');
       } else {
         showError(e.message || 'Lookup failed');
       }
@@ -228,12 +309,41 @@
       if (e.key === 'Enter') lookup($('ip-lookup-input').value);
     });
 
+    // Permalink support: /tools/ip-lookup/?ip=1.1.1.1
+    const params = new URLSearchParams(window.location.search);
+    const prefillIp = params.get('ip');
+    if (prefillIp) {
+      $('ip-lookup-input').value = prefillIp;
+      lookup(prefillIp, { updateUrl: false });
+    } else {
+      // Default lookup: user's current IP
+      lookup('', { updateUrl: true });
+    }
+
     $('ip-clear-btn').addEventListener('click', () => {
       $('ip-lookup-input').value = '';
       $('ip-results').classList.add('hidden');
       clearError();
       $('raw-json').textContent = '';
       $('raw-info').textContent = '-';
+      const url = new URL(window.location.href);
+      url.searchParams.delete('ip');
+      window.history.replaceState({}, '', url.toString());
+    });
+
+    $('ip-link-btn').addEventListener('click', async () => {
+      const ip = $('ip-lookup-input').value.trim();
+      if (!ip) {
+        showError('Look up an IP first to generate a link');
+        return;
+      }
+      const url = new URL(window.location.href);
+      url.searchParams.set('ip', ip);
+      await navigator.clipboard.writeText(url.toString());
+      const btn = $('ip-link-btn');
+      const orig = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(() => (btn.textContent = orig), 1000);
     });
 
     // Optional: auto lookup if user pastes
