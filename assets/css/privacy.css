@@ -1,0 +1,39 @@
+/* Privacy shields */
+.privacy-shield {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+}
+
+.privacy-shield svg {
+  width: 18px;
+  height: 18px;
+}
+
+.privacy-shield--browser {
+  color: #1f9d55; /* green */
+}
+
+.privacy-shield--thirdparty {
+  color: #2563eb; /* blue */
+}
+
+/* Tool cards on homepage */
+.tool-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tool-card-meta .privacy-shield {
+  width: 16px;
+  height: 16px;
+}
+
+.tool-card-meta .privacy-shield svg {
+  width: 16px;
+  height: 16px;
+}
