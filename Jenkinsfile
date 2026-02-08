@@ -36,7 +36,10 @@ pipeline {
                     sh '''
                         cd _site
                         ls -lh
-                        rsync -rvz -e "ssh -o StrictHostKeyChecking=no -o IdentityFile=${SSH_KEY}" * cicduser@${DEPLOY_SERVER}:${DEPLOY_PATH}
+                        # NOTE: rsync options must appear before the source/dest args.
+                        # When --delete-after is placed after the destination, rsync treats
+                        # it as a file argument and no deletion occurs.
+                        rsync -rvz --delete-after -e "ssh -o StrictHostKeyChecking=no -o IdentityFile=${SSH_KEY}" . cicduser@${DEPLOY_SERVER}:${DEPLOY_PATH}
                     '''
                 }
             }
@@ -52,7 +55,10 @@ pipeline {
                     sh '''
                         cd _site
                         ls -lh
-                        rsync -rvz -e "ssh -o StrictHostKeyChecking=no -o IdentityFile=${SSH_KEY}" * cicduser@${DEPLOY_SERVER}:${DEPLOY_PATH}
+                        # NOTE: rsync options must appear before the source/dest args.
+                        # When --delete-after is placed after the destination, rsync treats
+                        # it as a file argument and no deletion occurs.
+                        rsync -rvz --delete-after -e "ssh -o StrictHostKeyChecking=no -o IdentityFile=${SSH_KEY}" . cicduser@${DEPLOY_SERVER}:${DEPLOY_PATH}
                     '''
                 }
             }
