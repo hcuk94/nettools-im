@@ -179,6 +179,36 @@ body {
   gap: 0.5rem;
 }
 
+/* Service status dot */
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+  background: var(--border-color);
+  box-shadow: none;
+}
+
+.status-dot--ok {
+  background: #2ecc71;
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.18), 0 0 12px rgba(46, 204, 113, 0.55);
+}
+
+.status-dot--warn {
+  background: #f1c40f;
+  box-shadow: 0 0 0 3px rgba(241, 196, 15, 0.18), 0 0 12px rgba(241, 196, 15, 0.55);
+}
+
+.status-dot--down {
+  background: #e74c3c;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.18), 0 0 12px rgba(231, 76, 60, 0.55);
+}
+
+.status-dot--unknown {
+  background: #95a5a6;
+  box-shadow: 0 0 0 3px rgba(149, 165, 166, 0.14);
+}
+
 /* Generic icon-only footer buttons (room for a 3rd button later) */
 .icon-button {
   display: inline-flex;
