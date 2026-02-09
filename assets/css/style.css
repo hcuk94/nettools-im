@@ -218,6 +218,66 @@ body {
   color: var(--text-primary);
 }
 
+/* Custom tooltip for icon-only buttons (faster than native title tooltips) */
+.icon-button {
+  position: relative;
+}
+
+.icon-button::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%) translateY(4px);
+
+  padding: 0.35rem 0.55rem;
+  border-radius: 6px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  line-height: 1;
+  white-space: nowrap;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease, transform 120ms ease;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  z-index: 10;
+}
+
+.icon-button::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 4px);
+  transform: translateX(-50%) translateY(4px);
+
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--border-color);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease, transform 120ms ease;
+  z-index: 9;
+}
+
+/* Small inner triangle to match tooltip background */
+.icon-button:hover::before,
+.icon-button:focus-visible::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.icon-button:hover::after,
+.icon-button:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 .theme-icon {
   width: 18px;
   height: 18px;
