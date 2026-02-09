@@ -370,6 +370,21 @@ body {
   margin-bottom: 0;
 }
 
+/* Allow an input hint to span the full row (below input + buttons) so wrapped
+   buttons don't overlap it, while keeping button alignment consistent. */
+.input-group .input-hint--fullrow {
+  position: static;
+  flex-basis: 100%;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* IP lookup: disable the absolute-hint padding when using full-row hint
+   (must beat .input-group:has(.input-hint) specificity) */
+.input-group.input-group--hint-flow-on-wrap {
+  padding-bottom: 0;
+}
+
 .input-wrapper {
   flex: 1;
   min-width: 200px;
