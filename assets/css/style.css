@@ -370,6 +370,19 @@ body {
   margin-bottom: 0;
 }
 
+/* On narrower widths, let hint text take up layout space so wrapped buttons
+   don't overlap it (e.g. IP lookup "Copy Link" button on half-screen). */
+@media (max-width: 1100px) {
+  .input-group--hint-flow-on-wrap {
+    padding-bottom: 0;
+  }
+
+  .input-group--hint-flow-on-wrap .input-hint {
+    position: static;
+    margin-top: 0.5rem;
+  }
+}
+
 .input-wrapper {
   flex: 1;
   min-width: 200px;
