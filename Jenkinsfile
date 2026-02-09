@@ -49,7 +49,8 @@ pipeline {
             steps {
                 withCredentials([
                     sshUserPrivateKey(credentialsId: "ssh-key-cicduser", keyFileVariable: 'SSH_KEY'),
-                    string(credentialsId: 'servername-www1', variable: 'DEPLOY_SERVER'),
+                    string(credentialsId: 'servername-www1', variable: 'DEPLOY_SERVER1'),
+                    string(credentialsId: 'servername-www2', variable: 'DEPLOY_SERVER2'),
                     string(credentialsId: 'deploypath-nettools', variable: 'DEPLOY_PATH')
                 ]) {
                     sh '''
@@ -58,7 +59,8 @@ pipeline {
                         # NOTE: rsync options must appear before the source/dest args.
                         # When --delete-after is placed after the destination, rsync treats
                         # it as a file argument and no deletion occurs.
-                        rsync -rvz --delete-after -e "ssh -o StrictHostKeyChecking=no -o IdentityFile=${SSH_KEY}" . cicduser@${DEPLOY_SERVER}:${DEPLOY_PATH}
+                        rsync -rvz --delete-after -e "ssh -o StrictHostKeyChecking=no -o IdentityFile=${SSH_KEY}" . cicduser@${DEPLOY_SERVER1}:${DEPLOY_PATH}
+                        rsync -rvz --delete-after -e "ssh -o StrictHostKeyChecking=no -o IdentityFile=${SSH_KEY}" . cicduser@${DEPLOY_SERVER2}:${DEPLOY_PATH}
                     '''
                 }
             }
