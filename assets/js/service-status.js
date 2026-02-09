@@ -60,9 +60,9 @@
 
       const label =
         state === 'ok' ? 'Service Status: All systems operational' :
-        state === 'warn' ? 'Service Status: Degraded performance / maintenance' :
-        state === 'down' ? 'Service Status: Major outage' :
-        'Service Status: Unavailable';
+        state === 'warn' ? 'Service Status: Degraded' :
+        state === 'down' ? 'Service Status: Outage' :
+        'Service Status: Unknown';
 
       setButtonLabel(btn, label);
     } catch (e) {
