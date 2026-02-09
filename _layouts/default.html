@@ -41,6 +41,8 @@
     </main>
   </div>
   
+  <script src="{{ '/assets/js/service-status.js' | relative_url }}"></script>
+
   {% if page.scripts %}
     {% for script in page.scripts %}
       <script src="{{ script | relative_url }}"></script>
