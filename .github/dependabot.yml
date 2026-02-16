@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # Ruby / Jekyll dependencies (Gemfile)
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "deps"
+    target-branch: "staging"
+    labels:
+      - "dependencies"
+    open-pull-requests-limit: 5
