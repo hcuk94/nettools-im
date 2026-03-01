@@ -725,6 +725,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  /* Allow long values (e.g. IPv6) to shrink/wrap inside grid cells on mobile */
+  min-width: 0;
 }
 
 .summary-label {
@@ -2475,6 +2477,12 @@ body {
 .summary-value.highlight {
   color: var(--accent-color);
   font-weight: 600;
+}
+
+/* IP lookup: ensure long IPv6 addresses wrap nicely on narrow screens */
+#ip-summary .summary-value.highlight {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 /* MAC Lookup responsive */
