@@ -154,6 +154,13 @@
     return wordLoadPromise;
   }
 
+  function resolveSeparator(separatorMode) {
+    if (separatorMode !== 'random') return separatorMode;
+
+    const options = ['-', ' ', '_', '.'];
+    return options[randInt(options.length)];
+  }
+
   function buildPassphrase(opts) {
     const {
       words,
@@ -172,26 +179,30 @@
       chosen.push(applyCase(pickOne(words), caseMode));
     }
 
-    const base = chosen.join(separator);
+    const sep = resolveSeparator(separator);
+    const base = chosen.join(sep);
 
-    const digits = includeNumber ? randomDigits(numberDigits) : '';
-    const symbol = includeSymbol ? pickOne(symbolSet) : '';
+    // For policy-compatibility, we support padding both sides with both classes.
+    // (i.e. number+symbol at start AND number+symbol at end)
+    const digitsA = includeNumber ? randomDigits(numberDigits) : '';
+    const digitsB = includeNumber ? randomDigits(numberDigits) : '';
+    const symbolA = includeSymbol ? pickOne(symbolSet) : '';
+    const symbolB = includeSymbol ? pickOne(symbolSet) : '';
 
     // Placement rules:
     // - end: words + number + symbol (or whichever enabled)
     // - start: symbol + number + words
-    // - both: symbol + words + number (keeps start+end padding)
+    // - both: (symbol+number) + words + (number+symbol)
     if (placement === 'start') {
-      return `${symbol}${digits}${base}`;
+      return `${symbolA}${digitsA}${base}`;
     }
 
     if (placement === 'both') {
-      // Put symbol at start, digits at end (if enabled)
-      return `${symbol}${base}${digits}`;
+      return `${symbolA}${digitsA}${base}${digitsB}${symbolB}`;
     }
 
     // default: end
-    return `${base}${digits}${symbol}`;
+    return `${base}${digitsA}${symbolA}`;
   }
 
   async function generateAndRender() {
@@ -255,13 +266,17 @@
       // ignore
     }
 
+    // Entropy estimate: for "both" we generate two independent numbers/symbols.
+    const effectiveNumberDigits = includeNumber && placement === 'both' ? numberDigits * 2 : numberDigits;
+    const effectiveSymbolCount = includeSymbol && placement === 'both' ? 2 : 1;
+
     const bits = estimateEntropyBits({
       wordCount,
       wordlistSize: words.length,
       includeNumber,
-      numberDigits,
+      numberDigits: effectiveNumberDigits,
       includeSymbol,
-      symbolSetSize: symbolSet.length,
+      symbolSetSize: includeSymbol ? Math.pow(symbolSet.length, effectiveSymbolCount) : symbolSet.length,
       placement,
     });
 
