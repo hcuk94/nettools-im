@@ -203,10 +203,10 @@
 
     let words;
     try {
-      outputEl.textContent = 'Loading wordlist…';
+      outputEl.value = 'Loading wordlist…';
       words = await loadWords();
     } catch (err) {
-      outputEl.textContent = 'Failed to load wordlist.';
+      outputEl.value = 'Failed to load wordlist.';
       entropyEl.textContent = '—';
       // eslint-disable-next-line no-console
       console.error(err);
@@ -245,7 +245,15 @@
       placement,
     });
 
-    outputEl.textContent = pass;
+    outputEl.value = pass;
+
+    // Auto-select for quick copy (especially on desktop)
+    try {
+      outputEl.focus();
+      outputEl.select();
+    } catch (_) {
+      // ignore
+    }
 
     const bits = estimateEntropyBits({
       wordCount,
@@ -263,9 +271,9 @@
   async function copyToClipboard() {
     const outputEl = qs('pg-output');
     const copyStatusEl = qs('pg-copy-status');
-    const text = (outputEl && outputEl.textContent || '').trim();
+    const text = (outputEl && outputEl.value || '').trim();
 
-    if (!text || text === '—' || text.endsWith('…')) {
+    if (!text || text === '—' || text.endsWith('…') || text.includes('Failed to load')) {
       if (copyStatusEl) copyStatusEl.textContent = 'Nothing to copy yet.';
       return;
     }
