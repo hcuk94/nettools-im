@@ -2539,3 +2539,98 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================
+   Password Generator
+   ============================================ */
+
+.pg-output-field {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.9rem 1rem;
+}
+
+.pg-output-card {
+  margin-bottom: 1rem;
+}
+
+.pg-output-row .btn {
+  min-width: 110px;
+}
+
+.pg-options {
+  padding: 1.25rem;
+}
+
+.pg-options-summary {
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.pg-options-summary-note {
+  font-weight: 500;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.pg-options-grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.pg-extras {
+  grid-column: span 2;
+}
+
+.pg-extras-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 0.65rem 0.75rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+.pg-check {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+@media (max-width: 900px) {
+  .pg-options-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pg-extras {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 620px) {
+  .pg-options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pg-extras {
+    grid-column: auto;
+  }
+
+  .pg-output-row .btn {
+    width: 100%;
+  }
+}
+
