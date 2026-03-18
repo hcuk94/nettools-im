@@ -157,7 +157,7 @@
   function resolveSeparator(separatorMode) {
     if (separatorMode !== 'random') return separatorMode;
 
-    const options = ['-', ' ', '_', '.'];
+    const options = ['-', ':', '_', '.'];
     return options[randInt(options.length)];
   }
 

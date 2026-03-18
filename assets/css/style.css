@@ -2557,6 +2557,11 @@ body {
 
 .pg-output-row .btn {
   min-width: 110px;
+  justify-content: center;
+  /* Match the visually-taller password field */
+  padding-top: 0.9rem;
+  padding-bottom: 0.9rem;
+  line-height: 1;
 }
 
 .pg-options {
