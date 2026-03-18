@@ -189,20 +189,29 @@
     const symbolA = includeSymbol ? pickOne(symbolSet) : '';
     const symbolB = includeSymbol ? pickOne(symbolSet) : '';
 
+    const prefixExtra = `${symbolA}${digitsA}`;
+    const suffixExtra = `${digitsB}${symbolB}`;
+
+    // Add a separator between the words and any numeric/symbol padding.
+    // This helps avoid ambiguity when the last word ends with a character
+    // that resembles a digit (e.g. O/0).
+    const prefix = prefixExtra ? `${prefixExtra}${sep}` : '';
+    const suffix = suffixExtra ? `${sep}${suffixExtra}` : '';
+
     // Placement rules:
-    // - end: words + number + symbol (or whichever enabled)
-    // - start: symbol + number + words
-    // - both: (symbol+number) + words + (number+symbol)
+    // - end: words + sep + (number+symbol)
+    // - start: (symbol+number) + sep + words
+    // - both: (symbol+number) + sep + words + sep + (number+symbol)
     if (placement === 'start') {
-      return `${symbolA}${digitsA}${base}`;
+      return `${prefix}${base}`;
     }
 
     if (placement === 'both') {
-      return `${symbolA}${digitsA}${base}${digitsB}${symbolB}`;
+      return `${prefix}${base}${suffix}`;
     }
 
     // default: end
-    return `${base}${digitsA}${symbolA}`;
+    return `${base}${suffix}`;
   }
 
   async function generateAndRender() {
